@@ -8,6 +8,6 @@
 
 
 int main(){
-	Menu();
-	OpMenu();
-}
+	MainMenu();
+	OpMainMenu();
+} 
