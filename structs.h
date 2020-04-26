@@ -19,6 +19,7 @@ SHIP RotatePiece270(SHIP piece);
 SHIP RotatePiece180(SHIP piece);
 SHIP RotatePiece90(SHIP piece);
 void PrintPiece(SHIP piece);
-BOARD *erase_board_data(BOARD *player,int size);
+BOARD *EraseBoardData(BOARD *player,int size);
 void PrintBoard(BOARD *player,int size);
 BOARD *BuildBoard(int size);
+ 
