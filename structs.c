@@ -32,8 +32,9 @@ BOARD *BuildBoard(int size){
 	return player;
 }
 
-//expressão matemática para a board: posição = y * comprimento + x
+//Expressão matemática para a board: posição = y * comprimento + x
 void PrintBoard(BOARD *player, int size){
+	//Numeração X------------------
 	printf("    ");
 	for(int i = 0; i < size; i++){
 		if(i < 10)
@@ -42,12 +43,15 @@ void PrintBoard(BOARD *player, int size){
 			printf("%d ", i); 
 	}
 	printf("\n\n");
+	//Numeração Y e Peças-------------------------------------------------
  	for(int y = 0; y < size; y++){
-    	if(y < 10)
-    		printf("  %d  ", y);
-    	else
-    	printf(" %d  ", y);  
-    	for(int x = 0; x < size; x++){
+		//NUMEROS---------------
+    		if(y < 10)
+    			printf("  %d  ", y);
+    		else
+    			printf(" %d  ", y);  
+		//Peças-----------------------------------------------------------
+    		for(int x = 0; x < size; x++){
 		    switch (player->map[y*size+x].posinfo){
 			      case '0': //Blue
 					      printf("\033[0;34m");
@@ -73,13 +77,13 @@ void PrintBoard(BOARD *player, int size){
 			      		printf("%c  ", player->map[y*size + x].posinfo);
 			      		break;
 		    }
-    	}
-    	printf("\n");
+    		}
+    		printf("\n");
   	}
   printf("\n");
 }
 
-BOARD* erase_board_data(BOARD* player, int size){
+BOARD* EraseBoardData(BOARD* player, int size){
 
   size *= size;
 
@@ -93,44 +97,44 @@ BOARD* erase_board_data(BOARD* player, int size){
 	return player;
 }
 
-//recebe e imprime uma peça 5x5
+//Recebe e imprime uma peça 5x5
 void PrintPiece(SHIP piece){
 	for(int y = 0; y < 5; y++){
 	    for(int x = 0; x < 5; x++){
 	    	printf("%c ", piece.bitmap[y*5 + x]);
 	    }
-    	printf("\n");
+    		printf("\n");
   	}
   	printf("\n");
 }
 
-//recebe uma peça 5x5, roda-a 90 graus e copia a rotação para uma nova peça, que será retornada
+//Recebe uma peça 5x5, roda-a 90 graus e copia a rotação para uma nova peça, que será retornada
 SHIP RotatePiece90(SHIP piece){
   	int i = 0;
   	SHIP newpiece;
   	for(int y = 0; y < 5; y++){
-    	for(int x = 0; x < 5; x++){
-      		newpiece.bitmap[i] = piece.bitmap[20 + y - (x*5)];
-      		i++;
-    	}
+    		for(int x = 0; x < 5; x++){
+      			newpiece.bitmap[i] = piece.bitmap[20 + y - (x*5)];
+      			i++;
+    		}
   	}
   	return newpiece;
 }
 
-//recebe uma peça 5x5, roda-a 180 graus e copia a rotação para uma nova peça, que será retornada
+//Recebe uma peça 5x5, roda-a 180 graus e copia a rotação para uma nova peça, que será retornada
 SHIP RotatePiece180(SHIP piece){
 	int i = 0;
   	SHIP newpiece;
   	for(int y = 0; y < 5; y++){
-    	for(int x = 0; x < 5; x++){
-     		newpiece.bitmap[i] = piece.bitmap[24 - (y*5) - x];
-      		i++;
-    	}
+    		for(int x = 0; x < 5; x++){
+     			newpiece.bitmap[i] = piece.bitmap[24 - (y*5) - x];
+      			i++;
+    		}
   	}
   return newpiece;
 }
 
-//recebe uma peça 5x5, roda-a 270 graus e copia a rotação para uma nova peça, que será retornada
+//Recebe uma peça 5x5, roda-a 270 graus e copia a rotação para uma nova peça, que será retornada
 SHIP RotatePiece270(SHIP piece){
 	int i = 0;
 	SHIP newpiece;
@@ -143,7 +147,7 @@ SHIP RotatePiece270(SHIP piece){
 	return newpiece;
 }
 
-//recebe o mapa do jogador que está a inserir, a peça que quer inserir e o tamanho do mapa. Retorna 0 se for inserida com sucesso, 1 se alguma parte do barco for inválida.
+//Recebe o mapa do jogador que está a inserir, a peça que quer inserir e o tamanho do mapa. Retorna 0 se for inserida com sucesso, 1 se alguma parte do barco for inválida.
 //px e py: coordenadas da peça
 //mx e my: coordenadas da matriz
 //nx e ny: coordenadas novas
@@ -152,7 +156,7 @@ int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orienta
 	if(orientation < 0 || orientation > 3) return 1;
 
   	SHIP original = piece;
-
+	//Verificação da orientação--------------
  	switch (orientation){
 	   	case 0:break;
 	   	case 1:piece = RotatePiece90(piece);
@@ -169,7 +173,7 @@ int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orienta
 		  	nx = mx + px - 2;
 		  	ny = my + py - 2; 
 		  	if((player->map[ny * size + nx].posinfo == '1' && piece.bitmap[py * 5 + px] == '1') || (piece.bitmap[py * 5 + px] == '1' && (nx < 0 || nx >= size || ny < 0 || ny >= size))){
-		    	piece = original;
+		    		piece = original;
 		    	return 1;
 		  	}
 		}
@@ -178,12 +182,12 @@ int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orienta
  // y * comp + x
  //Sabendo que todas as posições são válidas, falta apenas inserir
   	for(int py = 0; py < 5; py++){
-    	for(int px = 0; px < 5; px++){
-      		nx = mx + px - 2;
-      		ny = my + py - 2;
-			if(piece.bitmap[py * 5 + px] == '1')
-      			player->map[ny * size + nx].posinfo = '1';        
-    	}
+    		for(int px = 0; px < 5; px++){
+			nx = mx + px - 2;
+			ny = my + py - 2;
+				if(piece.bitmap[py * 5 + px] == '1')
+					player->map[ny * size + nx].posinfo = '1';        
+		}
   	}
   	return 0;
 }
