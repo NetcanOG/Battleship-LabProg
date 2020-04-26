@@ -4,8 +4,8 @@
 #include <ctype.h>
 #include <time.h>
 #include "structs.h"
-
-//TITULO DO JOGO
+ 
+//Titulo do jogo
 void Title(){
 	system("clear");
 	printf("\033[1;34m");
@@ -18,7 +18,7 @@ void Title(){
 	printf("\033[0m");
 	printf("\n");
 }
-//TIPOS DE PECAS DISPONIVEIS
+//Peças disponiveis no jogo
 void Pieces(){
 	printf("        ___________________________________________________________\n");
 	printf("  ID   |     C     |     B     |     R     |     S     |     D     |\n");
@@ -33,12 +33,13 @@ void Pieces(){
 	printf("       |___________|___________|___________|___________|___________|\n");
 	printf("\n\n");
 }
-//MENU PRINCIPAL
-void Menu(){
-	Title(); //TITULO
+//Menu Principal
+void MainMenu(){
+	Title(); //Titulo
 	printf("\033[1;34m");
 	printf("\t\t\t        DCC BATTESHIP\n \n");	
 	printf("\033[0m");
+
 	printf("                                        /|\n");
     printf("                                      _| |\n");
     printf("                                    _|   |\n");
@@ -59,46 +60,55 @@ void Menu(){
 	printf("               \\______________________________________________/\n\n");
 }
 
+
+//Troca para o próximo jogador
 void WaitForPlayer(){
-  system("clear");
-  Title();
-	printf("Please wait for the next player! Enter any input to continue playing.\n\n");
+  	Title();
+
+	printf("Por favor, aguarde o próximo jogador! Digite qualquer tecla para continuar o jogo. (Tecla e aseguir ENTER)\n\n");
 	char* anything = (char*) malloc(1000);
 	scanf("%s", anything);
 	free(anything);
+
 	system("clear");
 }
 
 
 //NTotal de Barcos para cada tipo
 void NPieces(int *nptpieces, int tabu){
-	int nb = (tabu*tabu)/25;
-	int vv=1; 
-	int cn=0;
+	int numbarcos = (tabu*tabu)/25;
+	int erro=0;  //0-sem erro     1- nºbarcos<1   2- limite de barcos
+	int contbarcos=0;
+
 	do{
 		Title();
+		
 		printf("\033[1;34m");
 		printf ("\n\t       TEMOS OS SEGUINTES BARCOS A SUA DISPOSIÇÃO\n");
 		printf("\033[0m");
-		Pieces();
-		if(vv==0){
+		
+		Pieces();//Mostrar Tipos de Barcos
+
+		if(erro==1){
 			printf("\033[1;31m");
     		printf("Valores incorretos tente novamente!(ERRO: nªbarcos < 1)\n");
 			printf("\033[0m");
 		}
-		if(vv==2){
+		if(erro==2){
 			printf("\033[1;31m");
     		printf("Valores incorretos tente novamente! (ERRO: nº total de barcos)\n");
 			printf("\033[0m");
 		}
-		vv=1;
-		cn=0;
+
+		erro=0;
+
+		//Escolha do número de barcos--------------------------------------------------------------------------------------------------------------------------------------
 		printf("\n");
 		printf("   _____________________________ \t");      printf("\033[1;33m");printf("AVISO!\n");printf("\033[0m");
 		printf("  |                             |\t");	    printf(" - Para cada tipo de barco\n");
 		printf("  |  Selecione o nº de barcos   |\t");		printf("deve colocar"); printf("\033[1;34m"); printf(" 1 ou mais");printf("\033[0m"); printf(" barcos.\n");
 		printf("  |_____________________________|\n");     
-		printf("  |       |                      \t");      printf(" - Máximo de");printf("\033[1;34m"); printf(" %d ",nb); printf("\033[0m"); printf("barcos.\n");		
+		printf("  |       |                      \t");      printf(" - Máximo de");printf("\033[1;34m"); printf(" %d ",numbarcos); printf("\033[0m"); printf("barcos.\n");		
 		printf("  |   C   | ");scanf("%d",&nptpieces[0]);
 		printf("  |   B   | ");scanf("%d",&nptpieces[1]);
 		printf("  |   R   | ");scanf("%d",&nptpieces[2]);
@@ -107,92 +117,107 @@ void NPieces(int *nptpieces, int tabu){
 		printf("  |_______|\n");
 
 		for(int i=0;i<5;i++){
-			cn=cn+nptpieces[i];
+			contbarcos=+nptpieces[i];
 			if(nptpieces[i]<1){
-				vv=0;
+				erro=1;
 			}
-			if(vv==1 && cn>nb){
-				vv=2;
+			if(erro==1 && contbarcos>numbarcos){
+				erro=2;
 			}
 		}
-	}while(vv!=1);
-	//return cn;
+	}while(erro!=0);
 }
-//VALIDAÇAO DO TAMANHO DO TABULEIRO
+
+//Validação do Tamanho do Tabuleiro
 int ValTab(){
-	int vv=1;
+	int erro=1;
 	int num;
+
 	do{	
-		system("clear");
 		Title();
-		if(vv==0){
+		
+		if(erro==0){
 			printf("\033[1;31m");
-			
     		printf("ERRO: Opção incorreta tente novamente!\n\n");
-			
 			printf("\033[0m");
 		}
+
 		printf("\033[1;34m");
 		printf("Qual é o tamanho do tabuleiro? \t");
 		printf("\033[0m");
 		printf("(minímo 20, máximo 40)\n");
+		
 		scanf("%d", &num);
+		
 		if (!(num>=20 && num<=40)){
-		    vv=0;
+		    erro=0;
     	}else{
-    		vv=1;
+    		erro=1;
     	}
-	}while(vv!=1);
+	}while(erro!=1);
+
 	return num;
 }
-//VALIDAÇAO DO MODO
+
+//Validação do Modo
 char ValModo(){
 	char modo=' ';
-	int vv=1;
+	int erro=1;
+
 	do{	
-		system("clear");
 		Title();
-		if(vv==0){
-			printf("\033[1;31m");
-			
+		
+		if(erro==0){
+			printf("\033[1;31m");	
     		printf("ERRO: Opção incorreta tente novamente!\n\n");
-			
 			printf("\033[0m");
 		}
+
 		printf("\033[1;34m");
 		printf("Colocação das Peças:  Automatico(A) ou Manual(M)?\n");
 		printf("\033[0m");
 		printf("Coloque a letra correspondente: ");
+		
 		scanf("%s", &modo);
 		modo=tolower(modo);
+		
 		switch (modo){
-    		case 'a':case 'm': vv=1;
+    		case 'a':case 'm': erro=1;
     				          break;
-    		default:vv=0;
+    		default:erro=0;
   		}
-	}while(vv!=1);
+	}while(erro!=1);
+
 	return modo;
 }
 
-//2-INSERÇAO MANUAL
+//2_Inserçao Manual dos Barcos
 void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
+	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
   	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
   	SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
   	SHIP Battleship; strcpy(Battleship.bitmap, "0000000100001000010000100");
   	SHIP Carrier; strcpy(Carrier.bitmap, "0000000110001100010000100");
+
 	int x, y, or, boatsinserted = 0, errorflag = -1;
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			system("clear");
+
 			printf("\033[1;32m");
 			printf("\t\t\t  JOGADOR %d: \n", np);
 			printf("\033[0m");
+
 			printf("\033[1;34m");
 	   		printf ("\n\t   VAMOS COLOCAR OS SEUS BARCOS NO TABULEIRO\n\n");
 	      	printf("\033[0m");
+
 	      	Pieces();
-	      	printf("\033[1;33m");printf("AVISO! ");printf("\033[0m"); printf("Na 'Orientação' deve colocar a seguinte indicação! (Rotações para a esquerda)\n \t");
+
+	      	//AVISO
+	      	printf("\033[1;33m");printf("AVISO! ");printf("\033[0m"); 
+	      	printf("Na 'Orientação' deve colocar a seguinte indicação! (Rotações para a esquerda)\n\t");
 	      	printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("->0º   ");
 	      	printf("\033[1;34m"); printf("1"); printf("\033[0m"); printf("->90º   ");
 	      	printf("\033[1;34m"); printf("2"); printf("\033[0m"); printf("->180º   ");
@@ -206,7 +231,8 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	        	printf("Erro a inserir!\n\n");
 	        	errorflag = 0;
 	      	}
-	      	//----------------------------------------------------
+
+	      	//Caixa de Inserção-------------------------------
 			printf("  NºBarco  | %d \n", boatsinserted + 1);
 			printf("   Nome    | ");
 			printf("\033[1;34m");
@@ -242,21 +268,19 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	    	}
 		}
 	}
+	//Mostrar resultado--------------------
   	Title();
+
 	printf("\033[1;32m");
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
+
 	PrintBoard(player, size);
 }
-//1-MODO MANUAL DE INSERÇÂO DE BARCOS
+
+//1_Modo Manual
 void ManualCoord(int npTipos[], int size){
 	system("clear");
-
-	BOARD *player1;
-	player1 = BuildBoard(size);
-
-	BOARD *player2;
-	player2 = BuildBoard(size);
 
 	int boatnumber=0;
   	for(int i = 0; i <5; i++){
@@ -264,50 +288,58 @@ void ManualCoord(int npTipos[], int size){
       		boatnumber++;
     	}
   	}
+  	//Dados do Jogador 1-----------------------------------
+  	BOARD *player1;
+	player1 = BuildBoard(size);
   	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	//Dados do Jogador 2-----------------------------------
+  	BOARD *player2;
+	player2 = BuildBoard(size);
   	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
   	
-  	//-----------------------------------------------------------------------------------
-	//COLOCAÇAO DAS PEÇAS
+  	//Colocação das Peças----------------------------------------------------------------------------
+  	//Jogador 1
 	int loop=1;
 	while(loop!=0){
+		//Inserção das Peças
 		InsertBoatM(1,npTipos,player1,size,ships1);
 
+		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("1"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player1 = erase_board_data(player1, size);
+			player1 = EraseBoardData(player1, size);
 		}
 	}
 
-	//NAO DEIXAR VER O CONTEUDO ANTERIOR
+	//Não deixar ver o conteúdo anterior
 	WaitForPlayer();
-
-	system("clear");
 	
+	//Jogador 2
 	loop=1;
 	while(loop!=0){
+		//Inserção das Peças
 		InsertBoatM(2,npTipos,player2,size,ships2);
 
+		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("1"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player2 = erase_board_data(player2, size);
+			player2 = EraseBoardData(player2, size);
 		}
 	}
-
-
-	
 	//---------------------------------------------
 }
-//2-INSERÇAO AUTOMATICO
+
+//2_Inserçao Automática dos Barcos
 void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
+	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
 	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
 	SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
@@ -339,21 +371,19 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	    	}
 		}
 	}
+	//Mostrar Resultado-------------------
   	Title();
+
 	printf("\033[1;32m");
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
+	
 	PrintBoard(player, size);
 }
 
-//1-MODO AUTOMATICO DE INSERÇÂO DE BARCOS
+//1_Modo Automático
 void AutoCoord(int npTipos[], int size){   
 	system("clear");
-	BOARD *player1;
-	player1 = BuildBoard(size);
-
-	BOARD *player2;
-	player2 = BuildBoard(size);
 
 	int boatnumber=0;
   	for(int i = 0; i <5; i++){
@@ -361,73 +391,81 @@ void AutoCoord(int npTipos[], int size){
       		boatnumber++;
     	}
   	}
+  	//Dados do Jogador 1-----------------------------------
+  	BOARD *player1;
+	player1 = BuildBoard(size);
   	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	//Dados do Jogador 2-----------------------------------
+	BOARD *player2;
+	player2 = BuildBoard(size);
   	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
-  	
-  	//-----------------------------------------------------------------------------------
-	//COLOCAÇAO DAS PEÇAS
+
+	//Colocação das Peças----------------------------------------------------------------------------
+  	//Jogador 1
 	int loop=1;
 	while(loop!=0){
-		InsertBoatA(1,npTipos,player1,size,ships1); //ALTERAR
+		InsertBoatA(1,npTipos,player1,size,ships1); 
 
+		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("1"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player1 = erase_board_data(player1, size);
+			player1 = EraseBoardData(player1, size);
 		}
 	}
 
-	//NAO DEIXAR VER O CONTEUDO ANTERIOR
+	//Não deixar ver o conteúdo anterior
 	WaitForPlayer();
-
-	system("clear");
 
 	loop=1;
 	while(loop!=0){
 		InsertBoatA(2,npTipos,player2,size,ships2);
+
+		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("1"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player2 = erase_board_data(player2, size);
+			player2 = EraseBoardData(player2, size);
 		}
 	}
 	//---------------------------------------------
 }
 
-void Jogo(){			
-	int tal=ValTab();
-	char mod=ValModo();
+void Game(){			
+	int tal=ValTab(); //Tamanho do Tabuleiro
+	char mod=ValModo(); //Modo escolhido
 
-	//int piecesspj=0;
-	int npTipos[5]={0,0,0,0,0};
+	int npTipos[5]={0,0,0,0,0}; 
 
-	//piecesspj=NPieces(npTipos, tal);
-	NPieces(npTipos, tal);
+
+	NPieces(npTipos, tal); //Numero de Peças do Jogo
 
 	if (mod=='m'){
-		ManualCoord(npTipos,tal);
+		ManualCoord(npTipos,tal);  //Modo Manual
 	}else{
-		AutoCoord(npTipos,tal);
+		AutoCoord(npTipos,tal); //Modo Automatico
 	}		
 }
 
-//MENU-> REGRAS
-void Regras(){
-	system("clear");
+//Menu->Regras
+void Rules(){
+	Title();
+
 	printf("\033[1;34m");
 	printf ("\nREGRAS DO JOGO:\n \n");	
 	printf("\033[0m");
+
 	printf ("1. Este é um jogo de 2 jogadores.\n\n");
 	printf ("2. Os jogadores terão a opção de inserir manualmente as coordenadas para o tabuleiro de jogo ou o computador gera aleatoriamente um tabuleiro de jogo.\n\n");
 	printf ("3. Existem cinco tipos de navios a serem colocados pelo maior comprimento até o menor; \n");
-	printf ("   [c] Carrier possui 5 células,\n");
-	printf ("   [b] Battleship possui 4 células,\n");
+	printf ("   [c] Carrier possui 6 células,\n");
+	printf ("   [b] Battleship possui 3 células,\n");
 	printf ("   [r] Cruiser possui 3 células, \n");
 	printf ("   [s] Submarine possui 3 células, \n");
 	printf ("   [d] Destroyer possui 2 células.\n \n");
@@ -439,47 +477,44 @@ void Regras(){
 	printf(" \\            /			 \\            / \n");
 }
 
-//VALIDAÇAO DA OPÇAO REGRAS
-void OpRegras(){
+//Validação das Opções da Regras
+void OpRules(){
 	char op;
     printf("\nEscolha uma opção: \n");
     scanf("%s", &op);
     op=tolower(op);
     switch (op){
-    	case 'j':	system("clear");  
-    				Jogo();
-    				break;
-    	case 's':
-    			system("clear");
+    	case 'j':Game();
+    			break;
+    	case 's':system("clear");
     			exit(0);
     			break;
-    	default:system("clear");
-    			Regras();
+    	default:Rules();
     			printf("\033[1;31m");
     			printf("\n Opção incorreta tente novamente!\n");
 				printf("\033[0m");
-    			OpRegras();
+    			OpRules();
     }
 }
 
-//VALIDAÇAO DA OPÇAO MENU
-void OpMenu(){
+//Validação do Menu Principal
+void OpMainMenu(){
 	int op=0;
     printf("\nEscolha uma opção: \n");
     scanf("%d", &op);
     if(op==1){
-    	Jogo();
+    	Game();
     }else{
     	if(op==2){
     		system("clear"); 
-    		Regras();
-    		OpRegras();
+    		Rules();
+    		OpRules();
     	}else{
-    		Menu();
+    		MainMenu();
     		printf("\033[1;31m");
     		printf("\nOpção incorreta tente novamente!\n");
 			printf("\033[0m");
-    		OpMenu();
+    		OpMainMenu();
     	}
     }
 }
