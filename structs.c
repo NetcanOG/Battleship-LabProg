@@ -8,22 +8,21 @@
 typedef struct Ship{   //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
 	char bitmap[26];
 } SHIP;
-
 typedef struct Cell{
 	SHIP *shippointer;   //apontador para o navio, pode ser NULL
 	char posinfo;	   //variável position_information (pos_info), 0 = no shot, 1 = shot that didn't hit, 2 = shot that hit an enemy piece
 } CELL;
-
 typedef struct Board{
-	int player; 
+	int size; 
 	CELL *map;
 } BOARD;
 */
 
 BOARD *BuildBoard(int size){
-	size = size*size;
   BOARD* player;
 	player = (BOARD*) malloc(sizeof(BOARD));
+	player->size = size;
+	size = size*size;
 	player->map = (CELL*) malloc(size * sizeof(CELL));
 	for(int i = 0; i < size; i++){
 		player->map[i].posinfo = '0';
@@ -190,60 +189,44 @@ int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orienta
 
 /*
 Ships:
-
 Destroyer:
    0 1 2 3 4
-
 0  0 0 0 0 0
 1  0 0 0 0 0
 2  0 0 1 0 0
 3  0 0 1 0 0
 4  0 0 0 0 0 
-
 0000000000001000010000000 
-
 Submarine:
    0 1 2 3 4
-
 0  0 0 0 0 0
 1  0 0 0 0 0
 2  0 0 1 0 0
 3  0 0 1 0 0
 4  0 0 1 0 0 
-
 0000000000001000010000100 
-
 Cruiser:
    0 1 2 3 4
-
 0  0 0 0 0 0
 1  0 0 0 0 0
 2  0 0 1 1 0
 3  0 0 1 0 0
 4  0 0 1 0 0 
-
 0000000000001100010000100 
-
 Battleship:
    0 1 2 3 4
-
 0  0 0 0 0 0
 1  0 0 1 0 0
 2  0 0 1 0 0
 3  0 0 1 0 0
 4  0 0 1 0 0 
-
 0000000100001000010000100
-
 Carrier:
    0 1 2 3 4
-
 0  0 0 0 0 0
 1  0 0 1 1 0
 2  0 0 1 1 0
 3  0 0 1 0 0
 4  0 0 1 0 0 
-
 0000000110001100010000100 
 */
- 

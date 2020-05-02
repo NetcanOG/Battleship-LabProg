@@ -10,7 +10,7 @@ typedef struct Cell{
 } CELL;
 
 typedef struct Board{
-	int player;
+	int size;
 	CELL *map;
 } BOARD;
 
@@ -22,4 +22,3 @@ void PrintPiece(SHIP piece);
 BOARD *EraseBoardData(BOARD *player,int size);
 void PrintBoard(BOARD *player,int size);
 BOARD *BuildBoard(int size);
- 
