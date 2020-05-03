@@ -12,7 +12,9 @@ int main(){
 	BOARD **players; 
 	BOARD* player1;
 	BOARD* player2;
+
 	players = OpMainMenu();
+
 	player1 = players[1];
 	player2 = players[2];
 	
@@ -27,27 +29,25 @@ int main(){
 	Layout();
 
 	WaitForPlayer(playerFlag);
-	while(HP1 != 0 && HP2 != 0){
-    system("clear");
- 
+
+	while(HP1 != 0 && HP2 != 0){ 
 	    switch (playerFlag)	{
 			case 1:
-			  playerTurn(player1, player2, playerFlag);
+			  	playerTurn(player1, player2, playerFlag,HP2);
 				HP2 = getHP(player2);
 				playerFlag = 2;
-				ChangePlayer();
-				WaitForPlayer(playerFlag);
 				break;
 			
 			case 2:
-			  playerTurn(player2, player1, playerFlag);	
+			  	playerTurn(player2, player1, playerFlag,HP1);	
 				HP1 = getHP(player1);
 				playerFlag = 1;
-				ChangePlayer();
-				WaitForPlayer(playerFlag);
 				break;
-			}
 		}
+		//Mudança de jogador-----
+		ChangePlayer();
+		WaitForPlayer(playerFlag);
+	}
 
 	if(playerFlag == 1)  Win(2);
 	if(playerFlag == 2)  Win(1);
