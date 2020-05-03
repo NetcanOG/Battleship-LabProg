@@ -20,3 +20,4 @@ void PrintPiece(SHIP piece);
 BOARD *EraseBoardData(BOARD *player,int size);
 void PrintBoard(BOARD *player,int size);
 BOARD *BuildBoard(int size); 
+
