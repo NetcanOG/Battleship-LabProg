@@ -275,7 +275,7 @@ char ValModo(){
 			printf("\033[0m");
 		}
 		printf("\033[1;34m");
-		printf("Colocação das Peças:  Automatico(A) ou Manual(M)?\n");
+		printf("Colocação das Peças para os dois jogadores:  Automatico(A) ou Manual(M)?\n");
 		printf("\033[0m");
 		printf("A- as peças são colocadas aleatoriamente    M-cada jogador escolhe as coordenadas e a orientação \n\n");
 		printf("Coloque a letra correspondente: \n");
