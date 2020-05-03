@@ -6,7 +6,8 @@
 #include "structs.h"
 #include "game.h" 
 
-//função que recebe a board de um jogador e retorna um int com o valor de peças de barcos não destruídas (HP, Health Points)
+//função que recebe a board de um jogador e retorna um int com o valor de peças de barcos não destruídas 
+//(HP, Health Points)
 int getHP(BOARD* player){
 	int hp = 0, size = player->size;
 	size *= size;
@@ -75,11 +76,16 @@ int checkValidPosition(int size, int x, int y){
 	}
 	return 1;
 }
-
+ 
 //Função que ao receber um tabuleiro inimigo (BOARD* enemy), pede ao jogador para o atacar. Em caso de escolher coordenadas já utilizadas antes ou fora do mapa, repete a função. 
 //0 = water, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
-void shootEnemy(BOARD* enemy){
+void shootEnemy(BOARD* enemy, int HP){
 	int x, y;
+	printf("----------------------------------------------------------------------------------------------------------------------------\n");
+	printf("   Ainda lhe falta");
+	printf("\033[1;31m"); printf(" %d ",HP); printf("\033[0m");
+	printf("peças de barcos para destruir!\n");
+
   	printf("\nColoque em  x e y as coordenadas que quer atacar!\n");
 	printf("X: ");	scanf("%d", &x); for(int c=0; (c=getchar()) != '\n' && c!= EOF;);
   	printf("Y: ");	scanf("%d", &y); for(int c=0; (c=getchar()) != '\n' && c!= EOF;);
@@ -106,14 +112,14 @@ void shootEnemy(BOARD* enemy){
 			printf("\033[1;33m");
 			printf("Já atingiu está peça! Tente novamente.\n\n");
 			printf("\033[0m");
-			shootEnemy(enemy);
+			shootEnemy(enemy,HP);
 			break;
 			
 		case '3':
 			printf("\033[1;33m");
 			printf("Você já atirou lá e errou ... Tente novamente.\n\n");
 			printf("\033[0m");
-			shootEnemy(enemy);
+			shootEnemy(enemy,HP);
 			break;		
 		}
 		
@@ -122,15 +128,14 @@ void shootEnemy(BOARD* enemy){
 		printf("\033[1;33m");
 		printf("\nEntrada inválida! Tente novamente!\n");
 		printf("\033[0m");
-		shootEnemy(enemy);
+		shootEnemy(enemy,HP);
 	}
-	
+	printf("----------------------------------------------------------------------------------------------------------------------------\n");
 }
 
 //Função que mostra a informação necessária ao jogador no seu turno, como por exemplo o seu tabuleiro e os tiros falhados e acertados.
-void playerTurn(BOARD* player, BOARD* enemy, int playernumber){
+void playerTurn(BOARD* player, BOARD* enemy, int playernumber, int HP){
 	//mostrar qual o jogador
-
   	printf("\033[1;32m");
 	printf("\t\t\t  JOGADOR %d: \n\n", playernumber);
 	printf("\033[0m");
@@ -138,5 +143,5 @@ void playerTurn(BOARD* player, BOARD* enemy, int playernumber){
 	//----------------------------
 	PrintBoard(player, player->size);
 	printEnemyBoard(enemy);
-	shootEnemy(enemy);
+	shootEnemy(enemy, HP);
 }
