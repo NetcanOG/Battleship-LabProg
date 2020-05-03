@@ -1,5 +1,3 @@
-
-
 typedef struct Ship{   //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
 	char bitmap[26];
 } SHIP;
@@ -21,4 +19,4 @@ SHIP RotatePiece90(SHIP piece);
 void PrintPiece(SHIP piece);
 BOARD *EraseBoardData(BOARD *player,int size);
 void PrintBoard(BOARD *player,int size);
-BOARD *BuildBoard(int size);
+BOARD *BuildBoard(int size); 
