@@ -594,7 +594,7 @@ void Rules(){
 	printf ("2. Os jogadores devem decidir qual será o tamanho do tabuleiro, sabendo que não pode ser inferior a 20 nem superior a 40.\n");
 	printf ("3. Os jogadores terão duas opções para inserir os barcos:\n");
 		printf("\t Manualmente - as coordenadas e orientação são escolhidas por cada jogador\n");
-		printf("\t Aletoriament - o computador gera aleatoriamente um tabuleiro de jogo.\n\n");
+		printf("\t Aleatoriamente - o computador gera aleatoriamente um tabuleiro de jogo.\n\n");
 	printf ("4. Existem cinco tipos de navios a serem colocados pelo maior comprimento até o menor; \n");
 	printf ("   [C] Carrier possui 6 células,\n");
 	printf ("   [B] Battleship possui 3 células,\n");
