@@ -22,14 +22,14 @@ BOARD *BuildBoard(int size){
 //Função para imprimir a board.
 //Expressão matemática para passar de coordenadas a valores unidimensionais da board: posição = y * comprimento + x
 void PrintBoard(BOARD *player, int size){
-	printf("    ");
+	printf("   x");
 	for(int i = 0; i < size; i++){
 		if(i < 10)
 			printf(" %d ", i);
 		else
 			printf("%d ", i); 
 	}
-	printf("\n\n");
+	printf("\n  y\n");
  	for(int y = 0; y < size; y++){
     	if(y < 10)
     		printf("  %d  ", y);
