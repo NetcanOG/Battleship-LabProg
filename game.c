@@ -18,6 +18,8 @@ void Title(){
 	printf("\033[0m");
 	printf("\n");
 }
+
+//Apresentação para o inicio do jogo depois de recolhidas as informações pretendidas
 void Layout(){
 	printf("\033[1;34m");
 	printf("\t\t\t        DCC BATTESHIP\n \n");	
@@ -57,6 +59,7 @@ void Layout(){
 	system("clear");
 }
 
+//Apresentação do jogador vencedor depois de ter destruido tudo os barcos do adversário
 void Win(int jog){
 	Title();
 	printf("\033[1;34m");
@@ -75,13 +78,10 @@ void Win(int jog){
 	printf("          ___________)                                               /\n");
 	printf("         (                                                          / \n");
 	printf("          \\                          ");
-
-
 	printf("\033[1;34m");
 	printf("GANHOU");
 	printf("\033[0m");
-	
-	
+
 	printf("                       / \n");
 	printf("           \\                        ");
 	
@@ -118,7 +118,7 @@ void Pieces(){
 	printf("       |___________|___________|___________|___________|___________|\n");
 	printf("\n\n");
 }
-//Menu Principal
+//Menu inicial do jogo
 void MainMenu(){
 	Title(); //TITULO
 	printf("\033[1;34m");
@@ -144,7 +144,7 @@ void MainMenu(){
 	printf("               \\______________________________________________/\n\n");
 }
 
-//Troca para o próximo jogador
+//Troca para o próximo jogador, para que o adversário possa ver o tabuleiro
 void WaitForPlayer(int jogador){
   	Title();
 
@@ -160,9 +160,9 @@ void WaitForPlayer(int jogador){
 	system("clear");
 }
 
-//Depois da sua jogada ver a mensagem e avançar
+//Depois de inserir as coordenadas para atacar o jogador vê o que acertou e depois de ler da seguimento ao jogo
 void ChangePlayer(){  
-	printf("\nDigite qualquer tecla para limpar o seu ecrã! (Tecla e aseguir ENTER)\n\n");
+	printf("\nDigite qualquer tecla para limpar o seu ecrã e continuar o jogo! (Tecla e aseguir ENTER)\n\n");
 	char* anything = (char*) malloc(1000);
 	scanf("%s", anything);
 	free(anything);
@@ -170,8 +170,9 @@ void ChangePlayer(){
 	system("clear");
 }
 
-
-//NTotal de Barcos para cada tipo
+ 
+//funçao para selecionar o numero de barcos que vão ser utilizados no jogo
+//o nºbarcos nao pode ser superior ao limitado e c/tipo de barco tem de ter valor superior ou igual a 1
 void NPieces(int *nptpieces, int tabu){
 	int nb = (tabu*tabu)/25;
 	int erro=0;  //0-sem erro     1- nºbarcos<1   2- limite de barcos
@@ -185,7 +186,7 @@ void NPieces(int *nptpieces, int tabu){
 
 		Pieces(); //Mostrar Tipos de Barcos
 
-		if(erro==1){
+		if(erro==1){ 
 			printf("\033[1;31m");
     		printf("Valores incorretos tente novamente!(ERRO: nªbarcos < 1)\n");
 			printf("\033[0m");
@@ -226,7 +227,7 @@ void NPieces(int *nptpieces, int tabu){
 	}while(erro!=0);
 }
 
-//Validação do Tamanho do Tabuleiro
+//Validação do Tamanho do Tabuleiro sabendo que o tabuleiro tem de ser >=20 e <=40
 int ValTab(){
 	int erro=1;
 	int num;
@@ -258,7 +259,9 @@ int ValTab(){
 	return num;
 }
 
-//Validação do Modo
+//Validação do modo par o jogo
+//automatico as peças escolhida serão colocadas pelo computador aleatoriamente
+//manual o utilizador coloca as coordenadas e a orientação
 char ValModo(){
 	char modo=' ';
 	int erro=1;
@@ -274,7 +277,8 @@ char ValModo(){
 		printf("\033[1;34m");
 		printf("Colocação das Peças:  Automatico(A) ou Manual(M)?\n");
 		printf("\033[0m");
-		printf("Coloque a letra correspondente: ");
+		printf("A- as peças são colocadas aleatoriamente    M-cada jogador escolhe as coordenadas e a orientação \n\n");
+		printf("Coloque a letra correspondente: \n");
 
 		scanf("%s", &modo);
 		modo=tolower(modo);
@@ -290,6 +294,7 @@ char ValModo(){
 }
 
 //2_Inserçao Manual dos Barcos
+//esta função dde acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
 void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -308,7 +313,7 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			printf("\033[0m");
 
 			printf("\033[1;34m");
-	   		printf ("\n\t   VAMOS COLOCAR OS SEUS BARCOS NO TABULEIRO\n\n");
+	   		printf ("\n\t   VAMOS COLOCAR OS BARCOS NO SEU TABULEIRO\n\n");
 	      	printf("\033[0m");
 
 	      	Pieces();
@@ -374,9 +379,11 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 }
 
 //1_Modo Manual
+//esta funçao gere a colocação manual das peças e verifica se cada jogador quer ou nao alterar o tabuleiro que realizou
 BOARD** ManualCoord(int npTipos[], int size){
 	system("clear");
 
+	//nºde barcos---------------------------
 	int boatnumber=0;
   	for(int i = 0; i <5; i++){
     	for(int j = 0; j < npTipos[i]; j++){
@@ -412,7 +419,7 @@ BOARD** ManualCoord(int npTipos[], int size){
 		}
 	}
 
-	//Não deixar ver o conteúdo anterior
+	//Não deixar ver o conteúdo anterior e espera pelo proximo jogador
 	WaitForPlayer(2);
 
 	//Jogador 2
@@ -443,6 +450,7 @@ BOARD** ManualCoord(int npTipos[], int size){
 
 
 //2_Inserçao Automática dos Barcos
+//esta função dde acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
 void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -487,6 +495,7 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 }
 
 //1_Modo Automático
+//esta funçao gere a colocação automatica das peças e verifica se cada jogador quer ou nao alterar o tabuleiro que realizou
 BOARD** AutoCoord(int npTipos[], int size){   
 	system("clear");
 
@@ -553,6 +562,8 @@ BOARD** AutoCoord(int npTipos[], int size){
 	
 }
 
+//esta funçao gere todas as informações necessárias para o incio do jogo
+//Tamanho do tabuleiro, o modo, as peças e onde vão estar colocadas as peças
 BOARD** Game(){	
 	Title();		
 	int tal=ValTab(); //Tamanho do Tabuleiro
@@ -571,6 +582,7 @@ BOARD** Game(){
 }
 
 //Menu->Regras
+//esta função pretende mostrar aos jogadores as regras para o jogo
 void Rules(){
 	Title();
 
@@ -578,20 +590,23 @@ void Rules(){
 	printf ("\nREGRAS DO JOGO:\n \n");	
 	printf("\033[0m");
 	
-	printf ("1. Este é um jogo de 2 jogadores.\n\n");
-	printf ("2. Os jogadores terão a opção de inserir manualmente as coordenadas para o tabuleiro de jogo ou o computador gera aleatoriamente um tabuleiro de jogo.\n\n");
-	printf ("3. Existem cinco tipos de navios a serem colocados pelo maior comprimento até o menor; \n");
-	printf ("   [c] Carrier possui 6 células,\n");
-	printf ("   [b] Battleship possui 3 células,\n");
-	printf ("   [r] Cruiser possui 3 células, \n");
-	printf ("   [s] Submarine possui 3 células, \n");
-	printf ("   [d] Destroyer possui 2 células.\n \n");
-	printf ("4. O computador seleciona aleatoriamente qual player será o primeiro.\n \n");
-	printf ("5. O jogo começa quando cada jogador tenta adivinhar a localização dos navios do tabuleiro do adversário.\n\n");
-	printf ("6. Primeiro jogador a adivinhar a localização de todos os navios ganha.\n\n");
-	printf(" /            \\ 		 /            \\ \n");
-	printf("|   J-JOGAR    |		|    S-SAIR    |\n");
-	printf(" \\            /			 \\            / \n");
+	printf ("1. Este é um jogo de 2 jogadores num só computador.\n\n");
+	printf ("2. Os jogadores devem decidir qual será o tamanho do tabuleiro, sabendo que não pode ser inferior a 20 nem superior a 40.\n");
+	printf ("3. Os jogadores terão duas opções para inserir os barcos:\n");
+		printf("\t Manualmente - as coordenadas e orientação são escolhidas por cada jogador\n");
+		printf("\t Aletoriament - o computador gera aleatoriamente um tabuleiro de jogo.\n\n");
+	printf ("4. Existem cinco tipos de navios a serem colocados pelo maior comprimento até o menor; \n");
+	printf ("   [C] Carrier possui 6 células,\n");
+	printf ("   [B] Battleship possui 3 células,\n");
+	printf ("   [R] Cruiser possui 3 células, \n");
+	printf ("   [S] Submarine possui 3 células, \n");
+	printf ("   [D] Destroyer possui 2 células.\n \n");
+	printf ("5. O computador seleciona aleatoriamente qual o jogador será o primeiro.\n \n");
+	printf ("6. O jogo começa e cada jogador deve tentar adivinhar a localização dos navios do tabuleiro do adversário.\n\n");
+	printf ("7. Primeiro jogador a adivinhar a localização de todos os navios ganha.\n\n\n");
+	printf("    /            \\             /            \\ \n");
+	printf("   |   J-JOGAR    |           |    S-SAIR    |\n");
+	printf("    \\            /             \\            / \n");
 }
 
 //Validação das Opções da Regras
