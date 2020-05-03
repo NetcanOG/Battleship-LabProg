@@ -475,9 +475,9 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 				case 4: ships[boatsinserted] = Destroyer;
 						break; 
 			}			
-			x=rand() % size-1;
-			y=rand() % size-1;
-			or=rand() % 3;		
+			x=rand() % size-1; //de 0 a size-1
+			y=rand() % size-1; //de 0 a size-1
+			or=rand() % 3;	   //de 0 a 3	
 			if(InsertPiece(player, ships[boatsinserted], size, x, y, or) == 0){    
 	        	boatsinserted++;
 	      	}else{                                                            
