@@ -294,7 +294,7 @@ char ValModo(){
 }
 
 //2_Inserçao Manual dos Barcos
-//esta função dde acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
+//esta função de acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
 void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -450,7 +450,8 @@ BOARD** ManualCoord(int npTipos[], int size){
 
 
 //2_Inserçao Automática dos Barcos
-//esta função dde acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
+//esta função de acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
+//os números tanto para as coordenadas como para a rotação são escolhidos aleatoriamente, usando a função rand() da stdlib. É obtido um número aleatório e é feito o seu módulo com size-1 (para as coordenadas) e com 3 (para as rotações).
 void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -474,8 +475,8 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 				case 4: ships[boatsinserted] = Destroyer;
 						break; 
 			}			
-			x=rand() % size;
-			y=rand() % size;
+			x=rand() % size-1;
+			y=rand() % size-1;
 			or=rand() % 3;		
 			if(InsertPiece(player, ships[boatsinserted], size, x, y, or) == 0){    
 	        	boatsinserted++;
