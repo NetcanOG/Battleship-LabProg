@@ -3,21 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include "structs.h"
-/*
-typedef struct Ship{   //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
-	char bitmap[26];
-} SHIP;
-typedef struct Cell{
-	SHIP *shippointer;   //apontador para o navio, pode ser NULL
-	char posinfo;	   //variável position_information (pos_info), 0 = no shot, 1 = shot that didn't hit, 2 = shot that hit an enemy piece
-} CELL;
-typedef struct Board{
-	int size; 
-	CELL *map;
-} BOARD;
-*/
-
+#include "structs.h" 
+ 
 BOARD *BuildBoard(int size){
   BOARD* player;
 	player = (BOARD*) malloc(sizeof(BOARD));
@@ -77,9 +64,8 @@ void PrintBoard(BOARD *player, int size){
   	}
   printf("\n");
 }
-
+//Limpa a Board
 BOARD* EraseBoardData(BOARD* player, int size){
-
   size *= size;
 
 	for(int i = 0; i < size; i++){
