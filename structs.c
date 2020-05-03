@@ -5,6 +5,7 @@
 #include <time.h>
 #include "structs.h" 
  
+//Função para construír uma board vazia; recebe um int size e retorna um apontador do tipo BOARD com tamanho size.
 BOARD *BuildBoard(int size){
   BOARD* player;
 	player = (BOARD*) malloc(sizeof(BOARD));
@@ -18,7 +19,8 @@ BOARD *BuildBoard(int size){
 	return player;
 }
 
-//Expressão matemática para a board: posição = y * comprimento + x
+//Função para imprimir a board.
+//Expressão matemática para passar de coordenadas a valores unidimensionais da board: posição = y * comprimento + x
 void PrintBoard(BOARD *player, int size){
 	printf("    ");
 	for(int i = 0; i < size; i++){
