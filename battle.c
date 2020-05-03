@@ -6,8 +6,7 @@
 #include "structs.h"
 #include "game.h" 
 
-//função que recebe a board de um jogador e retorna um int com o valor de peças de
-//barcos não destruídas (HP, Health Points)
+//função que recebe a board de um jogador e retorna um int com o valor de peças de barcos não destruídas (HP, Health Points)
 int getHP(BOARD* player){
 	int hp = 0, size = player->size;
 	size *= size;
@@ -19,7 +18,7 @@ int getHP(BOARD* player){
 	return hp;
 }
 
-//Se na posição estiver um barco ou água, imprime 0 em ambos os casos. 2 se algum tiro tiver acertado, 3 se foi um tiro falhado
+//Função que imprime certas informações sobre a board inimiga. Se na posição estiver um barco ou água, imprime 0 em ambos os casos. 2 se algum tiro tiver acertado, 3 se foi um tiro falhado
 void printEnemyBoard(BOARD* player){
 	int size = player->size;
 	printf("    ");
@@ -69,6 +68,7 @@ void printEnemyBoard(BOARD* player){
 	printf("\n");
 }
 
+//Função que verifica se uma coordenada (x,y) é válida para um determinado size de uma board. Retorna 0 se sim, 1 se não.
 int checkValidPosition(int size, int x, int y){ 
   	if(x < size && x >= 0 && y < size && y >= 0){
     	return 0;
@@ -76,6 +76,7 @@ int checkValidPosition(int size, int x, int y){
 	return 1;
 }
 
+//Função que ao receber um tabuleiro inimigo (BOARD* enemy), pede ao jogador para o atacar. Em caso de escolher coordenadas já utilizadas antes ou fora do mapa, repete a função. 
 //0 = water, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
 void shootEnemy(BOARD* enemy){
 	int x, y;
@@ -126,6 +127,7 @@ void shootEnemy(BOARD* enemy){
 	
 }
 
+//Função que mostra a informação necessária ao jogador no seu turno, como por exemplo o seu tabuleiro e os tiros falhados e acertados.
 void playerTurn(BOARD* player, BOARD* enemy, int playernumber){
 	//mostrar qual o jogador
 
