@@ -329,7 +329,6 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	      	printf("\033[1;34m"); printf("3"); printf("\033[0m"); printf("->270º   \n\n");
 	      
 	      	PrintBoard(apresent, size);
-	      	PrintBoard(player, size);
 	      	
 	      	if(errorflag == 0)
 	      		printf("Inserido com Sucesso!\n\n");
@@ -387,6 +386,7 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\033[0m");
 
 	PrintBoard(apresent, size);
+	free(apresent);
 }
 
 //1_Modo Manual
@@ -516,6 +516,7 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\033[0m");
 
 	PrintBoard(apresent, size);
+	free(apresent);
 }
 
 //1_Modo Automático
@@ -544,6 +545,7 @@ BOARD** AutoCoord(int npTipos[], int size){
   	//Jogador 1
 	int loop=1;
 	while(loop!=0){
+		system("clear");
 		InsertBoatA(1,npTipos,player1,size,ships1); 
 
 		//Confirmação do tabuleiro--------------------------------------------------------------------
