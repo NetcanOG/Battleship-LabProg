@@ -8,7 +8,7 @@
 //Titulo do jogo
 void Title(){
 	system("clear");
-	printf("\033[1;34m");
+	printf("\033[1;34m"); 
 	printf ("   _____     ___    _____   _____   _       ____   ____   _   _   _   _____ \n");
 	printf ("  |  __ |   | _ |  |_   _| |_   _| | |     |  __| |  __| | | | | | | |  _  |\n");
 	printf ("  | |__| | | | | |   | |     | |   | |     | |_   | |__  | |_| | | | | |_| |\n");
@@ -296,6 +296,9 @@ char ValModo(){
 //2_Inserçao Manual dos Barcos
 //esta função de acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
 void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
+	BOARD *apresent;
+	apresent = BuildBoard(size);
+	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
   	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
@@ -325,6 +328,7 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	      	printf("\033[1;34m"); printf("2"); printf("\033[0m"); printf("->180º   ");
 	      	printf("\033[1;34m"); printf("3"); printf("\033[0m"); printf("->270º   \n\n");
 	      
+	      	PrintBoard(apresent, size);
 	      	PrintBoard(player, size);
 	      	
 	      	if(errorflag == 0)
@@ -340,18 +344,23 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			switch(i){
 				case 0: printf("Carrier\n");
 						ships[boatsinserted] = Carrier;
+						tipo='C';
 						break;
 				case 1: printf("Battleship\n");
 						ships[boatsinserted] = Battleship;
+						tipo='B';
 						break;
 				case 2: printf("Cruiser\n");
 						ships[boatsinserted] = Cruiser;
+						tipo='R';
 						break;
 				case 3: printf("Submarine\n");
 						ships[boatsinserted] = Submarine;
+						tipo='S';
 						break; 
 				case 4: printf("Destroyer\n");
 						ships[boatsinserted] = Destroyer;
+						tipo='D';
 						break; 
 			}			
 			printf("\033[0m");	
@@ -360,14 +369,15 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			printf("Orientação | "); scanf("%d", &or); for(int c; (c=getchar()) != '\n' && c!= EOF;);
 			printf("\n");
 				
-			if(InsertPiece(player, ships[boatsinserted], size, x, y, or) == 0){    
+			if(InsertPiece(player,apresent, ships[boatsinserted], size, x, y, or,tipo) == 0){    
 	        	boatsinserted++;
 	        	errorflag = 0;
+	        	//IPApresent(player, apresent, ships[boatsinserted], size, x, y, or, tipo);
 	      	}else{                                                            
 	        	j--;
 	        	errorflag = 1;
 	    	}
-		}
+		} 
 	}
 	//Mostrar resultado--------------------
   	Title();
@@ -375,7 +385,8 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\033[1;32m");
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
-	PrintBoard(player, size);
+
+	PrintBoard(apresent, size);
 }
 
 //1_Modo Manual
@@ -411,11 +422,10 @@ BOARD** ManualCoord(int npTipos[], int size){
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("Outra tecla"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
-		for(int c; (c=getchar()) != '\n' && c!= EOF;){
-			if(loop!=0){ //Limpar a board e recomeçar a inserção
-				loop=1;
-				player1 = EraseBoardData(player1, size);
-			}
+		for(int c; (c=getchar()) != '\n' && c!= EOF;);
+		if(loop!=0){ //Limpar a board e recomeçar a inserção
+			loop=1;
+			player1 = EraseBoardData(player1, size);
 		}
 	}
 
@@ -433,12 +443,12 @@ BOARD** ManualCoord(int npTipos[], int size){
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
 		printf("\033[1;34m"); printf("Outra tecla"); printf("\033[0m"); printf("-> Pretendo alterar\n");
 		scanf("%d", &loop);
-		for(int c; (c=getchar()) != '\n' && c!= EOF;){
-			if(loop!=0){ //Limpar a board e recomeçar a inserção
-				loop=1;
-				player2 = EraseBoardData(player2, size);
-			}
+		for(int c; (c=getchar()) != '\n' && c!= EOF;);
+		if(loop!=0){ //Limpar a board e recomeçar a inserção
+			loop=1;
+			player2 = EraseBoardData(player2, size);
 		}
+		
 	}
 
 	static BOARD *players[3];
@@ -453,6 +463,9 @@ BOARD** ManualCoord(int npTipos[], int size){
 //esta função de acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
 //os números tanto para as coordenadas como para a rotação são escolhidos aleatoriamente, usando a função rand() da stdlib. É obtido um número aleatório e é feito o seu módulo com size-1 (para as coordenadas) e com 3 (para as rotações).
 void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
+	BOARD *apresent;
+	apresent = BuildBoard(size);
+	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
 	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
@@ -464,21 +477,31 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			switch(i){
-				case 0: ships[boatsinserted] = Carrier;
+				case 0: printf("Carrier\n");
+						ships[boatsinserted] = Carrier;
+						tipo='C';
 						break;
-				case 1: ships[boatsinserted] = Battleship;
+				case 1: printf("Battleship\n");
+						ships[boatsinserted] = Battleship;
+						tipo='B';
 						break;
-				case 2: ships[boatsinserted] = Cruiser;
+				case 2: printf("Cruiser\n");
+						ships[boatsinserted] = Cruiser;
+						tipo='R';
 						break;
-				case 3: ships[boatsinserted] = Submarine;
+				case 3: printf("Submarine\n");
+						ships[boatsinserted] = Submarine;
+						tipo='S';
 						break; 
-				case 4: ships[boatsinserted] = Destroyer;
+				case 4: printf("Destroyer\n");
+						ships[boatsinserted] = Destroyer;
+						tipo='D';
 						break; 
-			}			
+			}					
 			x=rand() % size-1; //de 0 a size-1
 			y=rand() % size-1; //de 0 a size-1
 			or=rand() % 3;	   //de 0 a 3	
-			if(InsertPiece(player, ships[boatsinserted], size, x, y, or) == 0){    
+			if(InsertPiece(player,apresent, ships[boatsinserted], size, x, y, or,tipo) == 0){    
 	        	boatsinserted++;
 	      	}else{                                                            
 	        	j--;
@@ -492,7 +515,7 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
 
-	PrintBoard(player, size);
+	PrintBoard(apresent, size);
 }
 
 //1_Modo Automático
@@ -521,7 +544,7 @@ BOARD** AutoCoord(int npTipos[], int size){
   	//Jogador 1
 	int loop=1;
 	while(loop!=0){
-		InsertBoatA(1,npTipos,player1,size,ships1); //ALTERAR
+		InsertBoatA(1,npTipos,player1,size,ships1); 
 
 		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
@@ -650,13 +673,13 @@ BOARD** OpMainMenu(){
 		    		printf("\033[0m");
 		    		OpMainMenu();
 	    		}else{
-	    			for(int c; (c=getchar()) != '\n' && c!= EOF;){
-	    				MainMenu();
-			    		printf("\033[1;31m");
-			    		printf("\nOpção incorreta tente novamente! (Somente números)\n");
-			    		printf("\033[0m");
-			    		OpMainMenu();
-	    			}
+	    			for(int c; (c=getchar()) != '\n' && c!= EOF;);
+    				MainMenu();
+		    		printf("\033[1;31m");
+		    		printf("\nOpção incorreta tente novamente! (Somente números)\n");
+		    		printf("\033[0m");
+		    		OpMainMenu();
+	    			
 	    		}
 	    	}
     }
