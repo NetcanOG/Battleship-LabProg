@@ -51,5 +51,8 @@ int main(){
 
 	if(playerFlag == 1)  Win(2);
 	if(playerFlag == 2)  Win(1);
+	free(players);
+	free(player1);
+	free(player2);
 	return 0;
 }
