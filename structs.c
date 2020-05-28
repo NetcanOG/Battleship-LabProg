@@ -34,7 +34,7 @@ void PrintBoard(BOARD *player, int size){
     	if(y < 10)
     		printf("  %d  ", y);
     	else
-    	printf(" %d  ", y);  
+    	printf(" %d  ", y);   
     	for(int x = 0; x < size; x++){
 		    switch (player->map[y*size+x].posinfo){
 			      case '0': //Blue
@@ -42,7 +42,7 @@ void PrintBoard(BOARD *player, int size){
 					      printf("%c  ", player->map[y*size + x].posinfo);
 					      printf("\033[0m");
 					      break;
-			      case '1': //Bold Yellow
+			      case '1': case 'C':case 'B': case 'R': case 'S': case 'D': //Bold Yellow
 					      printf("\033[1;33m");
 					      printf("%c  ", player->map[y*size + x].posinfo);
 					      printf("\033[0m");
@@ -135,7 +135,7 @@ SHIP RotatePiece270(SHIP piece){
 //mx e my: coordenadas da matriz
 //nx e ny: coordenadas novas
 //O pivô da peça é o ponto central, equivalente à coordenada (2,2)
-int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orientation){
+int InsertPiece(BOARD *player,BOARD *apresent,SHIP piece,int size,int mx,int my,int orientation, char tipo){
 	if(orientation < 0 || orientation > 3) return 1;
 
   	SHIP original = piece;
@@ -168,12 +168,15 @@ int InsertPiece(BOARD *player, SHIP piece, int size, int mx, int my, int orienta
     	for(int px = 0; px < 5; px++){
       		nx = mx + px - 2;
       		ny = my + py - 2;
-			if(piece.bitmap[py * 5 + px] == '1')
-      			player->map[ny * size + nx].posinfo = '1';        
+			if(piece.bitmap[py * 5 + px] == '1'){
+      			player->map[ny * size + nx].posinfo = '1';
+      			apresent->map[ny * size + nx].posinfo = tipo;        
+      		}
     	}
   	}
   	return 0; 
 }
+
 
 /*
 Ships:
