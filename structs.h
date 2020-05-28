@@ -22,3 +22,6 @@ void PrintBoard(BOARD *player,int size);
 BOARD *BuildBoard(int size); 
 
 
+ 
+
+
