@@ -7,12 +7,12 @@ typedef struct Cell{
 	char posinfo;	   //variável position_information (pos_info), 0 = no shot, 1 = shot that didn't hit, 2 = shot that hit an enemy piece
 } CELL;
 
-typedef struct Board{
+typedef struct Board{ 
 	int size;
 	CELL *map;
 } BOARD;
 
-int InsertPiece(BOARD *player,SHIP piece,int size,int mx,int my,int orientation);
+int InsertPiece(BOARD *player,BOARD *apresent,SHIP piece,int size,int mx,int my,int orientation, char tipo);
 SHIP RotatePiece270(SHIP piece);
 SHIP RotatePiece180(SHIP piece);
 SHIP RotatePiece90(SHIP piece);
@@ -20,4 +20,5 @@ void PrintPiece(SHIP piece);
 BOARD *EraseBoardData(BOARD *player,int size);
 void PrintBoard(BOARD *player,int size);
 BOARD *BuildBoard(int size); 
+
 
