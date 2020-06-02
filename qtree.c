@@ -1,23 +1,73 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "qdtree.h"
 
-POINT createPoint(float x, float y){
+typedef struct Ship
+{ //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
+  char bitmap[26];
+} SHIP;
+
+typedef struct POINT
+{
+  float x, y;
+  int info; //0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
+} POINT;
+
+typedef enum
+{
+  QDNODE,
+  QDLEAF
+} QD_TNODE;
+
+typedef struct NODE
+{
+  QD_TNODE type; // defines the type of node (internal node or leaf)
+  POINT center;
+  float half; //half of the size of the board/square
+  int nsons;  //número de filhos (folhas preenchidas ou nós)
+
+  union {
+
+    struct NODE *quadrant[5]; //quadrant[4] não é um quadrante, é o nó pai
+                              /* struct NODE *NW;    // internal node    
+    struct NODE *NE;
+    struct NODE *SW;
+    struct NODE *SE; */
+    //struct NODE *father;
+
+    struct
+    {
+
+      SHIP *piece; // pointer to piece, if there is any
+
+      POINT p; // coords of the board cell
+
+      int flag; //0 se a folha estiver vazia, 1 se estiver preenchida
+
+    } leaf; //  almost a board cell together with its coordinates
+
+  } node;
+
+} NODE;
+
+POINT createPoint(float x, float y)
+{
   POINT coord;
   coord.x = x;
   coord.y = y;
-  coord.info = '0';
+  coord.info = 0;
   return coord;
 }
 
 //se igual retorna 1, diferente 0
-int comparePoints(POINT p1, POINT p2){
+int comparePoints(POINT p1, POINT p2)
+{
   if (p1.x == p2.x && p1.y == p2.y)
     return 1;
   return 0;
 }
 
-NODE *createNode(float size, POINT center, NODE *father){
+NODE *createNode(float size, POINT center, NODE *father)
+{
   NODE *node = (NODE *)malloc(sizeof(NODE));
   node->type = QDLEAF;
   node->node.leaf.piece = (SHIP *)malloc(sizeof(SHIP));
@@ -64,7 +114,7 @@ float returnQuadrantY(int quadrant, float y) {
   }
 }
 
-void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
+void insert(NODE *node, POINT coord, float xhalf, float yhalf)
 {
 
   if (node->type == QDLEAF)
@@ -75,7 +125,7 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
     {
       node->node.leaf.flag = 1;
       node->node.leaf.p = coord;
-      node->node.leaf.p.info = info;
+      node->node.leaf.p.info = 1;
       if (node->node.quadrant[4] != NULL)
       {
         node->node.quadrant[4]->nsons++;
@@ -99,36 +149,36 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
 
       if (temp.x <= xhalf && temp.y <= yhalf)
       {
-        insert(node->node.quadrant[0], temp, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
+        insert(node->node.quadrant[0], temp, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf));
       }
       else if (temp.x > xhalf && temp.y <= yhalf)
       {
-        insert(node->node.quadrant[1], temp, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
+        insert(node->node.quadrant[1], temp, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf));
       }
       else if (temp.x <= xhalf && temp.y > yhalf)
       {
-        insert(node->node.quadrant[2], temp, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
+        insert(node->node.quadrant[2], temp, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf));
       }
       else if (temp.x > xhalf && temp.y > yhalf)
       {
-        insert(node->node.quadrant[3], temp, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
+        insert(node->node.quadrant[3], temp, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf));
       }
 
       if (coord.x <= xhalf && coord.y <= yhalf)
       {
-        insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
+        insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf));
       }
       else if (coord.x > xhalf && coord.y <= yhalf)
       {
-        insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
+        insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf));
       }
       else if (coord.x <= xhalf && coord.y > yhalf)
       {
-        insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
+        insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf));
       }
       else if (coord.x > xhalf && coord.y > yhalf)
       {
-        insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
+        insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf));
       }
     }
   }
@@ -138,19 +188,19 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
   {
     if (coord.x <= xhalf && coord.y <= yhalf)
     {
-      insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
+      insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf));
     }
     else if (coord.x > xhalf && coord.y <= yhalf)
     {
-      insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
+      insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf));
     }
     else if (coord.x <= xhalf && coord.y > yhalf)
     {
-      insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
+      insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf));
     }
     else if (coord.x > xhalf && coord.y > yhalf)
     {
-      insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
+      insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf));
     }
   }
 }
@@ -273,11 +323,11 @@ int removeCoord(NODE *node, POINT coord)
       father->node.leaf.flag = 0;
     }
   }
-  return 0;
 }
 
 void PrintBoard(NODE *player, int size)
 {
+
   POINT tempPoint;
 
   printf("   x");
@@ -297,59 +347,29 @@ void PrintBoard(NODE *player, int size)
       printf(" %d  ", y);
     for (int x = 0; x < size; x++)
     {
+
       tempPoint = createPoint(x, y);
 
       if (searchCoord(player, tempPoint) == 1)
       {
         NODE* tempNode = getNode(player, tempPoint);
-        switch(tempNode->node.leaf.p.info){
-          
-          case 'C': case 'B': case 'R': case 'S': case 'D': //Bold Yellow
-          printf("\033[1;33m");
-          printf("%c  ", tempNode->node.leaf.p.info);
-          printf("\033[0m");
-          break;
-
-          case 1: //Bold Yellow
-          printf("\033[1;33m");
-          printf("%d  ", tempNode->node.leaf.p.info);
-          printf("\033[0m");
-          break;
-
-          case '0': //Blue
-          printf("\033[0;34m");
-          printf("0  ");
-          printf("\033[0m");
-          break;
-
-          case '2': //Bold Red
-          printf("\033[1;31m");
-          printf("2  ");
-          printf("\033[0m");
-          break;
-
-          case '3': //Green
-          printf("\033[0;32m");
-          printf("3  ");
-          printf("\033[0m");
-          break;
-          
-          default: //Branco (sem definições)
-          printf("%c  ", tempNode->node.leaf.p.info);
-          break;
-        }
+        printf("\033[1;33m");
+        printf("%d  ", tempNode->node.leaf.p.info);
+        printf("\033[0m");
       } else {
         printf("\033[0;34m");
         printf("0  ");
         printf("\033[0m");
       }
     }
+
     printf("\n");
   }
   printf("\n");
 }
 
-void printTree(NODE *tree, int level){
+void printTree(NODE *tree, int level)
+{
   switch (tree->type)
   {
   case QDLEAF:
@@ -370,167 +390,25 @@ void printTree(NODE *tree, int level){
   }
 }
 
-void EraseBoardData(NODE *player){
-  
-  switch (player->type){
-  
-  case QDLEAF:
-  free(player);
-  break;
+int main()
+{
 
-  case QDNODE:
-  EraseBoardData(player->node.quadrant[0]);
-  EraseBoardData(player->node.quadrant[1]);
-  EraseBoardData(player->node.quadrant[2]);
-  EraseBoardData(player->node.quadrant[3]);
-  break;
+  float size = 20;
+  POINT center = createPoint(9.5, 9.5);
+  NODE *root = createNode(size, center, NULL);
 
-  default:
-  break;
-  }
+  POINT numbahone = createPoint(0.0, 0.0);
+  POINT numbahtwo = createPoint(1.0, 0.0);
+  POINT numbahthree = createPoint(2.0, 0.0);
+  POINT numbahfour = createPoint(3.0, 0.0);
+
+  insert(root, numbahone, size / 2, size / 2);
+  //printTree(root, 0);
+  insert(root, numbahtwo, size / 2, size / 2);
+  insert(root, numbahthree, size / 2, size / 2);
+  insert(root, numbahfour, size / 2, size / 2);
+  //printTree(root, 0);
+  PrintBoard(root, size);
+
+  return 0;
 }
-
-//Recebe e imprime uma peça 5x5
-void PrintPiece(SHIP piece){
-	for(int y = 0; y < 5; y++){
-	    for(int x = 0; x < 5; x++){
-	    	printf("%c ", piece.bitmap[y*5 + x]);
-	    }
-    	printf("\n");
-  	}
-  	printf("\n");
-}
-
-//Recebe uma peça 5x5, roda-a 90 graus e copia a rotação para uma nova peça, que será retornada
-SHIP RotatePiece90(SHIP piece){
-  	int i = 0;
-  	SHIP newpiece;
-  	for(int y = 0; y < 5; y++){
-    	for(int x = 0; x < 5; x++){
-      		newpiece.bitmap[i] = piece.bitmap[20 + y - (x*5)];
-      		i++;
-    	}
-  	}
-  	return newpiece;
-}
-
-//Recebe uma peça 5x5, roda-a 180 graus e copia a rotação para uma nova peça, que será retornada
-SHIP RotatePiece180(SHIP piece){
-	int i = 0;
-  	SHIP newpiece;
-  	for(int y = 0; y < 5; y++){
-    	for(int x = 0; x < 5; x++){
-     		newpiece.bitmap[i] = piece.bitmap[24 - (y*5) - x];
-      		i++;
-    	}
-  	}
-  return newpiece;
-}
-
-//Recebe uma peça 5x5, roda-a 270 graus e copia a rotação para uma nova peça, que será retornada
-SHIP RotatePiece270(SHIP piece){
-	int i = 0;
-	SHIP newpiece;
-	for(int y = 0; y < 5; y++){
-		for(int x = 0; x < 5; x++){
-	  		newpiece.bitmap[i] = piece.bitmap[4 - y + (x*5)];
-	  		i++;
-		}
-	}
-	return newpiece;
-}
-
-//Recebe o mapa do jogador que está a inserir, a peça que quer inserir e o tamanho do mapa. Retorna 0 se for inserida com sucesso, 1 se alguma parte do barco for inválida.
-//px e py: coordenadas da peça
-//mx e my: coordenadas da matriz
-//nx e ny: coordenadas novas
-//O pivô da peça é o ponto central, equivalente à coordenada (2,2)
-int InsertPiece(NODE *player, SHIP piece, int size, int mx, int my, int orientation, char tipo){
-	if(orientation < 0 || orientation > 3) return 1;
-
-  SHIP original = piece;
-
- 	switch (orientation){
-	   	case 0:break;
-	   	case 1:piece = RotatePiece90(piece);
-	   			break;
-	   	case 2:piece = RotatePiece180(piece);
-				break;
-	   	case 3:piece = RotatePiece270(piece);
-	   			break;
-	}
-  //Primeiro verificamos se todos os pontos onde queremos inserir a peça são válidos, basta um não ser para retornar erro
-  int nx,ny;
-	for(int py = 0; py < 5; py++){
-		for(int px = 0; px < 5; px++){
-		  	nx = mx + px - 2;
-		  	ny = my + py - 2; 
-			POINT coord= createPoint(nx,ny);
-			coord.info=piece.bitmap[py*5+px];
-
-      if((searchCoord(player,coord) == 1 && (nx < 0 || nx >= size || ny < 0 || ny >= size))){
-        NODE * temp=getNode(player,coord);
-        if(temp->node.leaf.p.info!='0'){
-          piece = original;
-          return 0;
-        }
-      }
-		}
-  }
- //Sabendo que todas as posições são válidas, falta apenas inserir
-  	for(int py = 0; py < 5; py++){
-    	for(int px = 0; px < 5; px++){
-      		nx = mx + px - 2;
-      		ny = my + py - 2;
-        if(piece.bitmap[py*5+px] != '0'){
-          POINT coord=createPoint(nx,ny);
-          insert(player,coord,size/2,size/2, tipo);
-      	}
-    	}  
-  	}
-  	return 1; 
-}
-
-/*
-Ships:
-Destroyer:
-   0 1 2 3 4
-0  0 0 0 0 0
-1  0 0 0 0 0
-2  0 0 1 0 0
-3  0 0 1 0 0
-4  0 0 0 0 0 
-0000000000001000010000000 
-Submarine:
-   0 1 2 3 4
-0  0 0 0 0 0
-1  0 0 0 0 0
-2  0 0 1 0 0
-3  0 0 1 0 0
-4  0 0 1 0 0 
-0000000000001000010000100 
-Cruiser:
-   0 1 2 3 4
-0  0 0 0 0 0
-1  0 0 0 0 0
-2  0 0 1 1 0
-3  0 0 1 0 0
-4  0 0 1 0 0 
-0000000000001100010000100 
-Battleship:
-   0 1 2 3 4
-0  0 0 0 0 0
-1  0 0 1 0 0
-2  0 0 1 0 0
-3  0 0 1 0 0
-4  0 0 1 0 0 
-0000000100001000010000100
-Carrier:
-   0 1 2 3 4
-0  0 0 0 0 0
-1  0 0 1 1 0
-2  0 0 1 1 0
-3  0 0 1 0 0
-4  0 0 1 0 0 
-0000000110001100010000100 
-*/

@@ -1,16 +1,32 @@
-all: structs.o game.o battle.o battleship
+all: graphics.o qdtree.o qdgame.o structs.o game.o battle.o battleship quadbattleship
 
-structs.o: structs.c
+graphics.o: graphics.c
+	gcc -c -Wall -Werror -fpic graphics.c
+
+qdtree.o: qdtree.c graphics.o	
+	gcc -c -Wall -Werror -fpic qdtree.c
+
+qdgame.o: qdgame.c qdtree.o graphics.o	
+	gcc -c -Wall -Werror -fpic qdgame.c
+
+qdbattle.o: qdbattle.c qdgame.o qdtree.o graphics.o	
+	gcc -c -Wall -Werror -fpic qdbattle.c
+
+structs.o: structs.c graphics.o
 	gcc -c -Wall -Werror -fpic structs.c
 
-game.o: game.c structs.o
+game.o: game.c structs.o graphics.o
 	gcc -c -Wall -fpic game.c 
 
-battle.o: battle.c game.o structs.o
+battle.o: battle.c game.o structs.o graphics.o
 	gcc -c -Wall -fpic battle.c
 
-battleship: battle.o structs.o game.o battleship.c
-	gcc -Wall -Werror -fpic battleship.c battle.o structs.o game.o -o battleship
+battleship: battle.o structs.o game.o battleship.c graphics.o
+	gcc -Wall -Werror -fpic battleship.c graphics.o battle.o structs.o game.o -o battleship
+
+quadbattleship: qdtree.o qdbattle.o qdgame.o quadbattleship.c graphics.o
+	gcc -Wall -Werror -fpic quadbattleship.c graphics.o qdtree.o qdgame.o qdbattle.o -o quadbattleship	
 
 clean:
 	rm -f *.o battleship
+	rm -f *.o quadbattleship

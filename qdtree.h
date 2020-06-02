@@ -1,25 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Ship
-{ //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
+typedef struct Ship{ //bitmap em que cada posição tem um valor, 0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
   char bitmap[26];
 } SHIP;
 
-typedef struct POINT
-{
+typedef struct POINT{
   float x, y;
-  char info; //0 = empty, 1 = piece without being hit, 2 = piece hit, 3 = missed shot
+  char info; //0 = empty, CBRSD = piece without being hit, 2 = piece hit, 3 = missed shot
 } POINT;
 
-typedef enum
-{
+typedef enum{
   QDNODE,
   QDLEAF
 } QD_TNODE;
 
-typedef struct NODE
-{
+typedef struct NODE{
   QD_TNODE type; // defines the type of node (internal node or leaf)
   POINT center;
   float half; //half of the size of the board/square
@@ -34,13 +30,9 @@ typedef struct NODE
     // quadrant[2] = NE
     // quadrant[3] = SE
 
-    struct
-    {
-
+    struct{
       SHIP *piece; // pointer to piece, if there is any
-
       POINT p; // coords of the board cell
-
       int flag; //0 se a folha estiver vazia, 1 se estiver preenchida
 
     } leaf; //  almost a board cell together with its coordinates
@@ -49,22 +41,22 @@ typedef struct NODE
 
 } NODE;
 
-POINT createPoint(float x, float y)
-{
-  POINT coord;
-  coord.x = x;
-  coord.y = y;
-  coord.info = '0';
-  return coord;
-}
-
 POINT createPoint(float x, float y);
 int comparePoints(POINT p1, POINT p2);
 NODE *createNode(float size, POINT center, NODE *father);
-void insert(NODE *node, POINT coord, float xhalf, float yhalf);
+float returnQuadrantX(int quadrant, float x);
+float returnQuadrantY(int quadrant, float x);
+void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info);
 int searchCoord(NODE *root, POINT coord);
 NODE *getNode(NODE *node, POINT coord);
 void prune(NODE* current);
 int removeCoord(NODE *node, POINT coord);
 void PrintBoard(NODE *player, int size);
 void printTree(NODE *root, int level);
+
+int InsertPiece(NODE *player,SHIP piece,int size,int mx,int my,int orientation, char tipo);
+SHIP RotatePiece270(SHIP piece);
+SHIP RotatePiece180(SHIP piece);
+SHIP RotatePiece90(SHIP piece);
+void PrintPiece(SHIP piece);
+void EraseBoardData(NODE *player);

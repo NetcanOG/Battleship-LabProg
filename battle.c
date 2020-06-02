@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
@@ -69,12 +69,12 @@ void printEnemyBoard(BOARD* player){
 	printf("\n");
 }
 
-//Função que verifica se uma coordenada (x,y) é válida para um determinado size de uma board. Retorna 0 se sim, 1 se não.
-int checkValidPosition(int size, int x, int y){ 
+//Função que verifica se uma coordenada (x,y) é válida para um determinado size de uma board. Retorna 1 se sim, 0 se não.
+int checkValidPosition(int size, int x, int y){  
   	if(x < size && x >= 0 && y < size && y >= 0){
-    	return 0;
+    	return 1;
 	}
-	return 1;
+	return 0;
 }
  
 //Função que ao receber um tabuleiro inimigo (BOARD* enemy), pede ao jogador para o atacar. Em caso de escolher coordenadas já utilizadas antes ou fora do mapa, repete a função. 
@@ -92,7 +92,7 @@ void shootEnemy(BOARD* enemy, int HP){
 	printf("\n\n\n");
 
 
-	if(checkValidPosition(enemy->size, x, y) == 0){
+	if(checkValidPosition(enemy->size, x, y) == 1){
 		switch (enemy->map[y*enemy->size + x].posinfo){
 		case '0':
 			printf("\033[1;34m");

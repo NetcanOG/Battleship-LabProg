@@ -11,10 +11,5 @@ void InsertBoatM(int np,int npTipos[],BOARD *player,int size,SHIP *ships);
 char ValModo(); 
 int ValTab();
 void NPieces(int *nptpieces,int tabu);
-void WaitForPlayer();
-void ChangePlayer();
-void MainMenu();
-void Pieces();
-void Win(int jog); 
-void Layout();
-void Title();
+
+ 

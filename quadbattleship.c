@@ -3,16 +3,17 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include "structs.h"
-#include "game.h"
-#include "battle.h"
-#include "graphics.h" 
+#include "graphics.h"
+#include "qdtree.h"
+#include "qdgame.h"
+#include "qdbattle.h"
+
 
 int main(){
 	MainMenu(); 
-	BOARD **players; 
-	BOARD* player1;
-	BOARD* player2;
+	NODE **players; 
+	NODE* player1;
+	NODE* player2;
 
 	players = OpMainMenu();
 
@@ -57,3 +58,25 @@ int main(){
 	free(player2);
 	return 0;
 }
+
+    /*
+    float size = 20;
+    POINT center = createPoint(size / 2, size / 2);
+    NODE *root = createNode(size, center, NULL);
+
+    SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
+    SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
+    SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
+    SHIP Battleship; strcpy(Battleship.bitmap, "0000000100001000010000100");
+    SHIP Carrier; strcpy(Carrier.bitmap, "0000000110001100010000100");
+
+    InsertPiece(root,Carrier,size,5,5,1, 'C');
+    PrintBoard(root, size);
+
+    InsertPiece(root,Submarine,size,7,2,3,'S');
+
+    PrintBoard(root, size);
+
+    //printTree(root, 0);
+    return 0;
+    */

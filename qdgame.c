@@ -3,8 +3,9 @@
 #include <string.h>
 #include <ctype.h> 
 #include <time.h>
-#include "structs.h"
+#include "qdtree.h" 
 #include "graphics.h"
+#include "qdgame.h"
 
 
 //funçao para selecionar o numero de barcos que vão ser utilizados no jogo
@@ -131,9 +132,7 @@ char ValModo(){
 
 //2_Inserçao Manual dos Barcos
 //esta função de acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
-void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
-	BOARD *apresent;
-	apresent = BuildBoard(size);
+void InsertBoatM(int np, int npTipos[], NODE *player, int size,SHIP *ships){
 	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -164,7 +163,7 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	      	printf("\033[1;34m"); printf("2"); printf("\033[0m"); printf("->180º   ");
 	      	printf("\033[1;34m"); printf("3"); printf("\033[0m"); printf("->270º   \n\n");
 	      
-	      	PrintBoard(apresent, size);
+	      	PrintBoard(player, size);
 	      	
 	      	if(errorflag == 0)
 	      		printf("Inserido com Sucesso!\n\n");
@@ -204,10 +203,9 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			printf("Orientação | "); scanf("%d", &or); for(int c; (c=getchar()) != '\n' && c!= EOF;);
 			printf("\n");
 				
-			if(InsertPiece(player,apresent, ships[boatsinserted], size, x, y, or,tipo) == 1){    
+			if(InsertPiece(player,ships[boatsinserted], size, x, y, or,tipo) == 1){    
 	        	boatsinserted++;
 	        	errorflag = 0;
-	        	//IPApresent(player, apresent, ships[boatsinserted], size, x, y, or, tipo);
 	      	}else{                                                            
 	        	j--;
 	        	errorflag = 1;
@@ -221,13 +219,12 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
 
-	PrintBoard(apresent, size);
-	free(apresent);
+	PrintBoard(player, size);
 }
 
 //1_Modo Manual
 //esta funçao gere a colocação manual das peças e verifica se cada jogador quer ou nao alterar o tabuleiro que realizou
-BOARD** ManualCoord(int npTipos[], int size){
+NODE** ManualCoord(int npTipos[], int size){
 	system("clear");
 
 	//nºde barcos---------------------------
@@ -239,12 +236,12 @@ BOARD** ManualCoord(int npTipos[], int size){
   	}
 
   	//Dados do Jogador 1-----------------------------------
-  	BOARD *player1;
-	player1 = BuildBoard(size);
+  	NODE *player1;
+	player1=createNode(size,createPoint(size/2,size/2),NULL);
   	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
   	//Dados do Jogador 2-----------------------------------
-  	BOARD *player2;
-	player2 = BuildBoard(size);
+  	NODE *player2;
+	player2=createNode(size,createPoint(size/2,size/2),NULL);
   	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
   	
   	//Colocação das Peças----------------------------------------------------------------------------
@@ -261,7 +258,8 @@ BOARD** ManualCoord(int npTipos[], int size){
 		for(int c; (c=getchar()) != '\n' && c!= EOF;);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player1 = EraseBoardData(player1, size);
+			EraseBoardData(player1);
+			player1=createNode(size,createPoint(size/2,size/2),NULL);
 		}
 	}
 
@@ -282,12 +280,13 @@ BOARD** ManualCoord(int npTipos[], int size){
 		for(int c; (c=getchar()) != '\n' && c!= EOF;);
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player2 = EraseBoardData(player2, size);
+			EraseBoardData(player2);
+			player2=createNode(size,createPoint(size/2,size/2),NULL);
 		}
 		
 	}
 
-	static BOARD *players[3];
+	static NODE *players[3];
 	players[1] = player1;
 	players[2] = player2;
 	return players;
@@ -298,9 +297,7 @@ BOARD** ManualCoord(int npTipos[], int size){
 //2_Inserçao Automática dos Barcos
 //esta função de acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
 //os números tanto para as coordenadas como para a rotação são escolhidos aleatoriamente, usando a função rand() da stdlib. É obtido um número aleatório e é feito o seu módulo com size-1 (para as coordenadas) e com 3 (para as rotações).
-void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
-	BOARD *apresent;
-	apresent = BuildBoard(size);
+void InsertBoatA(int np, int npTipos[], NODE *player, int size,SHIP *ships){
 	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -313,23 +310,23 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			switch(i){
-				case 0: printf("Carrier\n");
+				case 0:
 						ships[boatsinserted] = Carrier;
 						tipo='C';
 						break;
-				case 1: printf("Battleship\n");
+				case 1:
 						ships[boatsinserted] = Battleship;
 						tipo='B';
 						break;
-				case 2: printf("Cruiser\n");
+				case 2:
 						ships[boatsinserted] = Cruiser;
 						tipo='R';
 						break;
-				case 3: printf("Submarine\n");
+				case 3:
 						ships[boatsinserted] = Submarine;
 						tipo='S';
 						break; 
-				case 4: printf("Destroyer\n");
+				case 4:
 						ships[boatsinserted] = Destroyer;
 						tipo='D';
 						break; 
@@ -337,7 +334,7 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			x=rand() % size-1; //de 0 a size-1
 			y=rand() % size-1; //de 0 a size-1
 			or=rand() % 3;	   //de 0 a 3	
-			if(InsertPiece(player,apresent, ships[boatsinserted], size, x, y, or,tipo) == 1){    
+			if(InsertPiece(player, ships[boatsinserted], size, x, y, or,tipo) == 1){    
 	        	boatsinserted++;
 	      	}else{                                                            
 	        	j--;
@@ -351,13 +348,12 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	printf("\t\t\t  JOGADOR %d: \n\n", np);
 	printf("\033[0m");
 
-	PrintBoard(apresent, size);
-	free(apresent);
+	PrintBoard(player, size);
 }
 
 //1_Modo Automático
 //esta funçao gere a colocação automatica das peças e verifica se cada jogador quer ou nao alterar o tabuleiro que realizou
-BOARD** AutoCoord(int npTipos[], int size){   
+NODE** AutoCoord(int npTipos[], int size){   
 	system("clear");
 
 	int boatnumber=0;
@@ -368,12 +364,12 @@ BOARD** AutoCoord(int npTipos[], int size){
   	}
   	
   	//Dados do Jogador 1-----------------------------------
-  	BOARD *player1;
-	player1 = BuildBoard(size);
+  	NODE *player1;
+	player1=createNode(size,createPoint(size/2,size/2),NULL);
   	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
   	//Dados do Jogador 2-----------------------------------
-	BOARD *player2;
-	player2 = BuildBoard(size);
+	NODE *player2;
+	player2 =createNode(size,createPoint(size/2,size/2),NULL);
   	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
   	
   	WaitForPlayer(1);
@@ -393,7 +389,8 @@ BOARD** AutoCoord(int npTipos[], int size){
 
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player1 = EraseBoardData(player1, size);
+			EraseBoardData(player1);
+			player1=createNode(size,createPoint(size/2,size/2),NULL);
 		}
 	}
 
@@ -413,11 +410,12 @@ BOARD** AutoCoord(int npTipos[], int size){
 
 		if(loop!=0){ //Limpar a board e recomeçar a inserção
 			loop=1;
-			player2 = EraseBoardData(player2, size);
+			EraseBoardData(player2);
+			player2=createNode(size,createPoint(size/2,size/2),NULL);
 		}
 	}
 	
-	static BOARD *players[3];
+	static NODE *players[3];
 	players[1] = player1;
 	players[2] = player2;
 	return players;
@@ -426,7 +424,7 @@ BOARD** AutoCoord(int npTipos[], int size){
 
 //esta funçao gere todas as informações necessárias para o incio do jogo
 //Tamanho do tabuleiro, o modo, as peças e onde vão estar colocadas as peças
-BOARD** Game(){	
+NODE** Game(){	
 	Title();		
 	int tal=ValTab(); //Tamanho do Tabuleiro
 
@@ -492,7 +490,7 @@ void OpRules(){
 }
 
 //Validação do Menu Principal
-BOARD** OpMainMenu(){
+NODE** OpMainMenu(){
 	int op=0;
     printf("\nEscolha uma opção: \n");
     scanf("%d", &op);
