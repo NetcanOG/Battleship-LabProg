@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "qdtree.h"
 
+//cria um objeto POINT de coordenadas (x,y) e retorna-o 
 POINT createPoint(float x, float y){
   POINT coord;
   coord.x = x;
@@ -10,13 +11,14 @@ POINT createPoint(float x, float y){
   return coord;
 }
 
-//se igual retorna 1, diferente 0
+//Compara as coordenadas de dois objetos Point, se iguais retorna 1, diferentes 0
 int comparePoints(POINT p1, POINT p2){
   if (p1.x == p2.x && p1.y == p2.y)
     return 1;
   return 0;
 }
 
+//cria e retorna um apontador do tipo NODE
 NODE *createNode(float size, POINT center, NODE *father){
   NODE *node = (NODE *)malloc(sizeof(NODE));
   node->type = QDLEAF;
@@ -31,7 +33,7 @@ NODE *createNode(float size, POINT center, NODE *father){
   return node;
 }
 
-
+//recebe um quadrant int e um float x e devolve a coordenada x correta para o ponto central do quadrante
 float returnQuadrantX(int quadrant, float x) {
   switch(quadrant) {
     case 0:
@@ -48,6 +50,7 @@ float returnQuadrantX(int quadrant, float x) {
   }
 }
 
+//recebe um quadrant int e um float y e devolve a coordenada y correta para o ponto central do quadrante
 float returnQuadrantY(int quadrant, float y) {
   switch(quadrant) {
     case 0:
@@ -64,12 +67,12 @@ float returnQuadrantY(int quadrant, float y) {
   }
 }
 
+//recebe um apontador NODE, um objeto POINT, xhalf e yhalf que representam o ponto central da ráiz da QuadTree
+//recebe também um char info que queremos guardar no ponto que vamos inserir na árvore
 void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
 {
-
   if (node->type == QDLEAF)
   {
-    //printf("LEAF\n");
     //se for folha e estiver vazia
     if (node->node.leaf.flag == 0)
     {
@@ -84,18 +87,12 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
     else
     { //se for folha e estiver preenchida
       POINT temp = node->node.leaf.p;
-      //printf("coord: %f %f\n", coord.x, coord.y);
-      //printf("temp: %f %f\n", node->node.leaf.p.x, node->node.leaf.p.y);
       node->type = QDNODE;
 
       node->node.quadrant[0] = createNode(xhalf * 2, createPoint(returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf)), node);
-      //printf("Quadrant[0] (%f, %f)\n", returnQuadrantX(Q, xhalf), returnQuadrantY(Q, yhalf));
       node->node.quadrant[1] = createNode(xhalf * 2, createPoint(returnQuadrantX(1, xhalf), returnQuadrantY(1, yhalf)), node);
-      //printf("Quadrant[1] (%f, %f)\n", returnQuadrantX(Q, xhalf), returnQuadrantY(Q, yhalf) + yhalf);
       node->node.quadrant[2] = createNode(xhalf * 2, createPoint(returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf)), node);
-      //printf("Quadrant[2] (%f, %f)\n", returnQuadrantX(Q, xhalf) + xhalf, returnQuadrantY(Q, yhalf));
       node->node.quadrant[3] = createNode(xhalf * 2, createPoint(returnQuadrantX(3, xhalf), returnQuadrantY(3, yhalf)), node);
-      //printf("Quadrant[3] (%f, %f)\n", returnQuadrantX(Q, xhalf) + xhalf, returnQuadrantY(Q, yhalf) + yhalf);
 
       if (temp.x <= xhalf && temp.y <= yhalf)
       {
@@ -155,14 +152,13 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
   }
 }
 
-//retorna 1 se encontrar a coordenada, 0 senão
+//Recebe um apontador NODE para a raíz e uma coordenada, retorna 1 se encontrar um ponto associado a essa coordenada na árvore, 0 senão
 int searchCoord(NODE *tree, POINT coord)
 {
   switch (tree->type)
   {
   case QDLEAF:
     if ((tree->node.leaf.flag == 1) && (comparePoints(coord, tree->node.leaf.p) == 1)) {
-      //printf("FLAG=1 (%f, %f) \t COORD (%f, %f)\n",tree->node.leaf.p.x,tree->node.leaf.p.y, coord.x, coord.y);
       return 1;
     }
     break;
@@ -187,6 +183,7 @@ int searchCoord(NODE *tree, POINT coord)
   return 0;
   }
 
+//sabendo que já existe uma coordenada na árvore, a função retorna o nó onde o ponto se encontra
 NODE *getNode(NODE *node, POINT coord)
 {
   switch (node->type) {
@@ -216,66 +213,7 @@ NODE *getNode(NODE *node, POINT coord)
   }
 }
 
-//retorna 0 se removeu com sucesso, 1 se falhou
-int removeCoord(NODE *node, POINT coord)
-{
-
-  if (searchCoord(node, coord) == 1)
-  {
-    return 1;
-  }
-  else
-  {
-
-    NODE *target = getNode(node, coord);
-    NODE *father = target->node.quadrant[4];
-    father->nsons--;
-
-    //free(target->node.quadrant[0]);
-    //free(target->node.quadrant[1]);
-    //free(target->node.quadrant[2]);
-    //free(target->node.quadrant[3]);
-
-    POINT tempPoint;
-    SHIP *tempShip;
-
-    if (father->nsons == 1)
-    {
-      if (father->node.quadrant[0]->node.leaf.flag == 1)
-      {
-        tempPoint = father->node.quadrant[0]->node.leaf.p;
-        tempShip = father->node.quadrant[0]->node.leaf.piece;
-      }
-      else if (father->node.quadrant[1]->node.leaf.flag == 1)
-      {
-        tempPoint = father->node.quadrant[1]->node.leaf.p;
-        tempShip = father->node.quadrant[1]->node.leaf.piece;
-      }
-      else if (father->node.quadrant[2]->node.leaf.flag == 1)
-      {
-        tempPoint = father->node.quadrant[2]->node.leaf.p;
-        tempShip = father->node.quadrant[2]->node.leaf.piece;
-      }
-      else if (father->node.quadrant[3]->node.leaf.flag == 1)
-      {
-        tempPoint = father->node.quadrant[3]->node.leaf.p;
-        tempShip = father->node.quadrant[3]->node.leaf.piece;
-      }
-      father->type = QDLEAF;
-      father->node.leaf.flag = 1;
-      father->node.leaf.p = tempPoint;
-      father->node.leaf.piece = tempShip;
-      father->nsons = 0;
-    }
-    else if (father->nsons == 0)
-    {
-      father->type = QDLEAF;
-      father->node.leaf.flag = 0;
-    }
-  }
-  return 0;
-}
-
+//recebe um apontador do tipo NODE da raíz da árvore e o tamanho da mesma, e imprime a board de jogo
 void PrintBoard(NODE *player, int size)
 {
   POINT tempPoint;
@@ -349,6 +287,7 @@ void PrintBoard(NODE *player, int size)
   printf("\n");
 }
 
+//não é usada no programa, mas serve para imprimir todos os níveis da árvore, se um nó é folha ou não, e a sua informação
 void printTree(NODE *tree, int level){
   switch (tree->type)
   {
@@ -358,7 +297,6 @@ void printTree(NODE *tree, int level){
     break;
   case QDNODE:
     printf("%d \t NODE \t center (%f, %f) \t info: %d \t half: %f \t sons: %d\n", level, tree->center.x, tree->center.y, tree->center.info, tree->half, tree->nsons);
-    //printf("\t coord (%f, %f) \t flag: %d \n", tree->node.leaf.p.x, tree->node.leaf.p.y, tree->node.leaf.flag, tree->node.leaf.p.info);
     level++;
     printTree(tree->node.quadrant[0], level);
     printTree(tree->node.quadrant[1], level);
@@ -370,6 +308,7 @@ void printTree(NODE *tree, int level){
   }
 }
 
+//função recursiva, recebe um apontador do tipo NODE para a raíz da árvore e liberta a memória para todos os seus nós
 void EraseBoardData(NODE *player){
   
   switch (player->type){

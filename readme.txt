@@ -1,22 +1,42 @@
 TP2_groupF - Miguel Ramos e Patrícia Vieira
 
-Requisitos para compilação: battle.c, battle.h, game.c, game.h, structs.c, structs.h, battleship.c.
-Como compilar: make battleship
+Requisitos para compilação do jogo original: graphics.c, graphics.h, battle.c, battle.h, game.c, game.h, structs.c, structs.h, battleship.c.
+Requisitos para compilação do jogo utilizando a QuadTree: graphics.c, graphics.h, qdbattle.c, qdbattle.h, qdgame.c, qdgame.h, qdtree.c, qdtree.h, quadbattleship.c
 
-Lista de bibliotecas criadas: structs(.c e .h), game(.c e .h) battle(.c e .h).
+Como compilar o jogo original: make battleship
+Como compilar o jogo utilizando a quadtree: make quadbattleship
+
+Como remover os .o's e executáveis: make clean
+
+Lista de bibliotecas criadas: structs(.c e .h), game(.c e .h) battle(.c e .h), graphics(.c e .h), qdbattle(.c e .h), qdgame(.c e .h), qdtree(.c e .h).
 Bibliotecas standard utilizadas: stdio.h, stdlib, string.h, ctype.h, time.h.
 
+graphics:
+  Tem grande parte das funções que têm como propósito apresentar alguma componente gráfica que se repita várias vezes e.g. o título Battleship (função Title()).
+
 structs:
-  Contém as definições básicas das estruturas usadas. As definições de board, bitmap e cell estão aqui presentes, bem como função para apagar boards, rodar peças, etc. Os detalhes sobre cada função estão presentes na documentação.
+  Depende de graphics. Contém as definições básicas das estruturas usadas. As definições de board, bitmap e cell estão aqui presentes, bem como função para apagar boards, rodar peças, etc. Os detalhes sobre cada função estão presentes na documentação.
 
 game:
-  Depende de structs. Contém todas as funções necessárias para a parte inicial do jogo, em que os jogadores escolhem o número de peças, como as colocar, e a inserção em si. Tem ainda grande parte de funções que têm como propósito apresentar alguma parte gráfica que se repita várias vezes e.g. o título Battleship (função Title()). Os detalhes sobre cada função estão presentes na documentação.
+  Depende de graphics e de structs. Contém todas as funções necessárias para a parte inicial do jogo, em que os jogadores escolhem o número de peças, como as colocar, e a inserção em si. Os detalhes sobre cada função estão presentes na documentação.
 
 battle:
-  Depende de structs e de game. Aqui estão definidas as funções necessárias à segunda parte do jogo, onde depois de as peças estarem colocadas, cada jogador irá atacar o outro por turnos. Contém formas de descobrir quantas peças de jogo ainda são válidas, como apresentar uma versão alterada do tabuleiro do adversário para saber os tiros já atirados, etc. Os detalhes sobre cada função estão presentes na documentação.
+  Depende de graphics, structs e de game. Aqui estão definidas as funções necessárias à segunda parte do jogo, onde depois de as peças estarem colocadas, cada jogador irá atacar o outro por turnos. Contém formas de descobrir quantas peças de jogo ainda são válidas, como apresentar uma versão alterada do tabuleiro do adversário para saber os tiros já atirados, etc.
 
 battleship:
-  Depende de structs, game e de battle. Onde se encontra o main do projeto, é aqui que são utilizadas as funções definidas nas bibliotecas anteriores. A parte mais importante será o loop que define a lógica jogo; cada iteração será correspondente a um turno de um jogador, alternando através de uma flag. Antes de o turno começar, é verificado quantas peças ainda estão intactas, e assim que um dos tabuleiros não tiver mais peças válidas, o jogo termina e é declarado o vencedor.
+  Depende de graphics, structs, game e de battle. Onde se encontra o main do projeto, é aqui que são utilizadas as funções definidas nas bibliotecas anteriores. A parte mais importante será o loop que define a lógica jogo; cada iteração será correspondente a um turno de um jogador, alternando através de uma flag. Antes de o turno começar, é verificado quantas peças ainda estão intactas, e assim que um dos tabuleiros não tiver mais peças válidas, o jogo termina e é declarado o vencedor.
+
+qdtree:
+  Depende de graphics. É o equivalente à biblioteca structs, mas para a versão de jogo da quadtree. Contém para criação da mesma, inserção de peças e coordenadas, etc. Os detalhes sobre cada função estão presentes na documentação.
+
+qdgame:
+  Depende de graphics e de qdtree. É o equivalente à biblioteca game para o jogo baseado na quadtree.
+
+qdbattle:
+  Depende de graphics, qdtree e de qdgame. É o equivalente à biblioteca battle para o jogo baseado na quadtree.
+
+quadbattleship:
+  Depende de graphics, qdtree, qdgame e de qdbattle. É o equivalente ao battleship para o jogo baseado na quadtree.
 
 
   Regras para a nossa versão de battleship:
