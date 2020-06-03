@@ -16,8 +16,7 @@ int getHP(NODE* player){
 	switch (player->type)
   {
   case QDLEAF:
-    switch (player->node.leaf.p.info)
-		{
+    switch (player->node.leaf.p.info){
 		case 'C': case 'B':case 'R':case 'S':case 'D':
 			return 1;
 			break;
@@ -148,7 +147,7 @@ void shootEnemy(NODE* enemy, int HP){
 					break;
 				case '2':
 					printf("\033[1;33m");
-					printf("Já atingiu está peça! Tente novamente.\n\n");
+					printf("Já atingiu esta peça! Tente novamente.\n\n");
 					printf("\033[0m");
 					shootEnemy(enemy,HP);
 					break;
@@ -164,9 +163,7 @@ void shootEnemy(NODE* enemy, int HP){
 		else{
 			printf("\033[1;34m");
 			printf("Água atingida!\n\n");
-			insert(enemy,target,enemy->half*2,enemy->half*2, '3');
-			NODE* tempnode=getNode(enemy,target);
-			tempnode->node.leaf.p.info= '3';
+			insert(enemy,target,enemy->half,enemy->half, '3');
 			printf("\033[0m");
 		}		
 	}

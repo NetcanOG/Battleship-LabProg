@@ -132,14 +132,15 @@ char ValModo(){
 
 //2_Inserçao Manual dos Barcos
 //esta função de acordo com o nºpeças por tipo faz a colocação manual das peças, o jogador correspondente escolhe as corrdenadas e orientação para cada peça
-void InsertBoatM(int np, int npTipos[], NODE *player, int size,SHIP *ships){
+void InsertBoatM(int np, int npTipos[], NODE *player, int size){
 	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
-  	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
-  	SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
-  	SHIP Battleship; strcpy(Battleship.bitmap, "0000000100001000010000100");
-  	SHIP Carrier; strcpy(Carrier.bitmap, "0000000110001100010000100");
+	SHIP Submarine; strcpy(Submarine.bitmap, "0000000000001000010000100");
+	SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
+	SHIP Battleship; strcpy(Battleship.bitmap, "0000000100001000010000100");
+	SHIP Carrier; strcpy(Carrier.bitmap, "0000000110001100010000100");
+	SHIP temp;
 
 	int x, y, or, boatsinserted = 0, errorflag = -1;
 	for(int i=0;i<5;i++){
@@ -176,29 +177,34 @@ void InsertBoatM(int np, int npTipos[], NODE *player, int size,SHIP *ships){
 			printf("   Nome    | ");
 			printf("\033[1;34m");
 			switch(i){
-				case 0: ships[boatsinserted] = Carrier;
+				case 0:
+						temp = Carrier;
 						tipo='C';
 						break;
-				case 1: ships[boatsinserted] = Battleship;
+				case 1:
+						temp = Battleship;
 						tipo='B';
 						break;
-				case 2: ships[boatsinserted] = Cruiser;
+				case 2:
+						temp = Cruiser;
 						tipo='R';
 						break;
-				case 3: ships[boatsinserted] = Submarine;
+				case 3:
+						temp = Submarine;
 						tipo='S';
 						break; 
-				case 4: ships[boatsinserted] = Destroyer;
+				case 4:
+						temp = Destroyer;
 						tipo='D';
 						break; 
-			}			
+			}					
 			printf("\033[0m");	
 			printf(" Coord. X  | "); scanf("%d", &x); for(int c; (c=getchar()) != '\n' && c!= EOF;);
 			printf(" Coord. Y  | "); scanf("%d", &y); for(int c; (c=getchar()) != '\n' && c!= EOF;);
 			printf("Orientação | "); scanf("%d", &or); for(int c; (c=getchar()) != '\n' && c!= EOF;);
 			printf("\n");
 				
-			if(InsertPiece(player,ships[boatsinserted], size, x, y, or,tipo) == 1){    
+			if(InsertPiece(player,temp, size, x, y, or,tipo) == 1){    
 	        	boatsinserted++;
 	        	errorflag = 0;
 	      	}else{                                                            
@@ -232,19 +238,17 @@ NODE** ManualCoord(int npTipos[], int size){
 
   	//Dados do Jogador 1-----------------------------------
   	NODE *player1;
-	player1=createNode(size,createPoint(size/2,size/2),NULL);
-  	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	player1=createNode(size,createPoint(size/2,size/2),NULL);
   	//Dados do Jogador 2-----------------------------------
   	NODE *player2;
-	player2=createNode(size,createPoint(size/2,size/2),NULL);
-  	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	player2=createNode(size,createPoint(size/2,size/2),NULL);
   	
   	//Colocação das Peças----------------------------------------------------------------------------
   	//Jogador 1
 	int loop=1;
 	while(loop!=0){
 		//Inserção das Peças
-		InsertBoatM(1,npTipos,player1,size,ships1);
+		InsertBoatM(1,npTipos,player1,size);
 
 		printf("\nPretende alterar o seu mapa:\n \n");
 		printf("\033[1;34m"); printf("0"); printf("\033[0m"); printf("-> Não pretendo alterar 	 ");
@@ -265,7 +269,7 @@ NODE** ManualCoord(int npTipos[], int size){
 	loop=1;
 	while(loop!=0){
 		//Inserção das Peças
-		InsertBoatM(2,npTipos,player2,size,ships2);
+		InsertBoatM(2,npTipos,player2,size);
 
 		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
@@ -292,7 +296,7 @@ NODE** ManualCoord(int npTipos[], int size){
 //2_Inserçao Automática dos Barcos
 //esta função de acordo com o nºpeças por tipo faz a colocação automatica das peças (aleatoriamente)
 //os números tanto para as coordenadas como para a rotação são escolhidos aleatoriamente, usando a função rand() da stdlib. É obtido um número aleatório e é feito o seu módulo com size-1 (para as coordenadas) e com 3 (para as rotações).
-void InsertBoatA(int np, int npTipos[], NODE *player, int size,SHIP *ships){
+	void InsertBoatA(int np, int npTipos[], NODE *player, int size){
 	char tipo;
 	//Barcos-----------------------------------------------------------------
 	SHIP Destroyer; strcpy(Destroyer.bitmap, "0000000000001000010000000");
@@ -300,32 +304,38 @@ void InsertBoatA(int np, int npTipos[], NODE *player, int size,SHIP *ships){
 	SHIP Cruiser; strcpy(Cruiser.bitmap, "0000000000001100010000100");
 	SHIP Battleship; strcpy(Battleship.bitmap, "0000000100001000010000100");
 	SHIP Carrier; strcpy(Carrier.bitmap, "0000000110001100010000100");
-	
+	SHIP temp;
 	int x, y, or, boatsinserted = 0;
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			switch(i){
-				case 0:	ships[boatsinserted] = Carrier;
+				case 0:
+						temp = Carrier;
 						tipo='C';
 						break;
-				case 1:	ships[boatsinserted] = Battleship;
+				case 1:
+						temp = Battleship;
 						tipo='B';
 						break;
-				case 2:	ships[boatsinserted] = Cruiser;
+				case 2:
+						temp = Cruiser;
 						tipo='R';
 						break;
-				case 3:	ships[boatsinserted] = Submarine;
+				case 3:
+						temp = Submarine;
 						tipo='S';
 						break; 
-				case 4:	ships[boatsinserted] = Destroyer;
+				case 4:
+						temp = Destroyer;
 						tipo='D';
 						break; 
 			}					
 			x=rand() % size-1; //de 0 a size-1
 			y=rand() % size-1; //de 0 a size-1
 			or=rand() % 3;	   //de 0 a 3	
-			if(InsertPiece(player, ships[boatsinserted], size, x, y, or,tipo) == 1){    
+			if(InsertPiece(player, temp, size, x, y, or,tipo) == 1){    
 	        	boatsinserted++;
+						PrintBoard(player, size);
 	      	}else{                                                            
 	        	j--;
 	    	}
@@ -355,12 +365,10 @@ NODE** AutoCoord(int npTipos[], int size){
   	
   	//Dados do Jogador 1-----------------------------------
   	NODE *player1;
-	player1=createNode(size,createPoint(size/2,size/2),NULL);
-  	SHIP *ships1 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	player1=createNode(size,createPoint(size/2,size/2),NULL);
   	//Dados do Jogador 2-----------------------------------
-	NODE *player2;
-	player2 =createNode(size,createPoint(size/2,size/2),NULL);
-  	SHIP *ships2 = (SHIP*) malloc(sizeof(SHIP) * boatnumber);
+  	NODE *player2;
+  	player2 =createNode(size,createPoint(size/2,size/2),NULL);
   	
   	WaitForPlayer(1);
 	//Colocação das Peças----------------------------------------------------------------------------
@@ -368,7 +376,7 @@ NODE** AutoCoord(int npTipos[], int size){
 	int loop=1;
 	while(loop!=0){
 		system("clear");
-		InsertBoatA(1,npTipos,player1,size,ships1); 
+		InsertBoatA(1,npTipos,player1,size); 
 
 		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");
@@ -389,7 +397,7 @@ NODE** AutoCoord(int npTipos[], int size){
 
 	loop=1;
 	while(loop!=0){
-		InsertBoatA(2,npTipos,player2,size,ships2);
+		InsertBoatA(2,npTipos,player2,size);
 
 		//Confirmação do tabuleiro--------------------------------------------------------------------
 		printf("\nPretende alterar o seu mapa:\n \n");

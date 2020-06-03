@@ -440,13 +440,13 @@ SHIP RotatePiece270(SHIP piece){
 	return newpiece;
 }
 
-//Recebe o mapa do jogador que está a inserir, a peça que quer inserir e o tamanho do mapa. Retorna 0 se for inserida com sucesso, 1 se alguma parte do barco for inválida.
+//Recebe o mapa do jogador que está a inserir, a peça que quer inserir e o tamanho do mapa. Retorna 1 se for inserida com sucesso, 0 se alguma parte do barco for inválida.
 //px e py: coordenadas da peça
 //mx e my: coordenadas da matriz
 //nx e ny: coordenadas novas
 //O pivô da peça é o ponto central, equivalente à coordenada (2,2)
 int InsertPiece(NODE *player, SHIP piece, int size, int mx, int my, int orientation, char tipo){
-	if(orientation < 0 || orientation > 3) return 1;
+	if(orientation < 0 || orientation > 3) return 0;
 
   SHIP original = piece;
 
@@ -468,12 +468,14 @@ int InsertPiece(NODE *player, SHIP piece, int size, int mx, int my, int orientat
 			POINT coord= createPoint(nx,ny);
 			coord.info=piece.bitmap[py*5+px];
 
-      if((searchCoord(player,coord) == 1 && (nx < 0 || nx >= size || ny < 0 || ny >= size))){
-        NODE * temp=getNode(player,coord);
-        if(temp->node.leaf.p.info!='0'){
-          piece = original;
-          return 0;
-        }
+      if(searchCoord(player,coord)) {//&& (nx < 0 || nx >= size || ny < 0 || ny >= size)){
+        piece = original;
+        return 0;
+      }
+      
+      if(coord.info != '0' && (nx < 0 || nx >= size || ny < 0 || ny >= size)) {
+        piece = original;
+        return 0;
       }
 		}
   }

@@ -177,19 +177,24 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			printf("   Nome    | ");
 			printf("\033[1;34m");
 			switch(i){
-				case 0: ships[boatsinserted] = Carrier;
+				case 0: printf("Carrier\n");
+						ships[boatsinserted] = Carrier;
 						tipo='C';
 						break;
-				case 1: ships[boatsinserted] = Battleship;
+				case 1: printf("Battleship\n");
+						ships[boatsinserted] = Battleship;
 						tipo='B';
 						break;
-				case 2: ships[boatsinserted] = Cruiser;
+				case 2: printf("Cruiser\n");
+						ships[boatsinserted] = Cruiser;
 						tipo='R';
 						break;
-				case 3: ships[boatsinserted] = Submarine;
+				case 3: printf("Submarine\n");
+						ships[boatsinserted] = Submarine;
 						tipo='S';
 						break; 
-				case 4: ships[boatsinserted] = Destroyer;
+				case 4: printf("Destroyer\n");
+						ships[boatsinserted] = Destroyer;
 						tipo='D';
 						break; 
 			}			
@@ -202,6 +207,7 @@ void InsertBoatM(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 			if(InsertPiece(player,apresent, ships[boatsinserted], size, x, y, or,tipo) == 1){    
 	        	boatsinserted++;
 	        	errorflag = 0;
+	        	//IPApresent(player, apresent, ships[boatsinserted], size, x, y, or, tipo);
 	      	}else{                                                            
 	        	j--;
 	        	errorflag = 1;
@@ -307,19 +313,24 @@ void InsertBoatA(int np, int npTipos[], BOARD *player, int size,SHIP *ships){
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			switch(i){
-				case 0: ships[boatsinserted] = Carrier;
+				case 0: printf("Carrier\n");
+						ships[boatsinserted] = Carrier;
 						tipo='C';
 						break;
-				case 1: ships[boatsinserted] = Battleship;
+				case 1: printf("Battleship\n");
+						ships[boatsinserted] = Battleship;
 						tipo='B';
 						break;
-				case 2: ships[boatsinserted] = Cruiser;
+				case 2: printf("Cruiser\n");
+						ships[boatsinserted] = Cruiser;
 						tipo='R';
 						break;
-				case 3: ships[boatsinserted] = Submarine;
+				case 3: printf("Submarine\n");
+						ships[boatsinserted] = Submarine;
 						tipo='S';
 						break; 
-				case 4: ships[boatsinserted] = Destroyer;
+				case 4: printf("Destroyer\n");
+						ships[boatsinserted] = Destroyer;
 						tipo='D';
 						break; 
 			}					
