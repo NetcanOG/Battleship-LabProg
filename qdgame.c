@@ -28,7 +28,6 @@ void NPieces(int *nptpieces, int tabu){
     		printf("Valores incorretos tente novamente!(ERRO: nªbarcos < 1)\n");
 			printf("\033[0m");
 		}
-
 		if(erro==2){
 			printf("\033[1;31m");
     		printf("Valores incorretos tente novamente! (ERRO: nº total de barcos)\n");
@@ -53,7 +52,6 @@ void NPieces(int *nptpieces, int tabu){
 
 		for(int i=0;i<5;i++){
 			cn=cn+nptpieces[i];
-
 			if(nptpieces[i]<1){
 				erro=1;
 			}
@@ -82,7 +80,7 @@ int ValTab(){
 		printf("Qual é o tamanho do tabuleiro? \t");
 		printf("\033[0m");
 		printf("(minímo 20, máximo 40)\n");
-		
+
 		scanf("%d", &num);
 		for(int c; (c=getchar()) != '\n' && c!= EOF;);
 		
@@ -177,23 +175,23 @@ void InsertBoatM(int np, int npTipos[], NODE *player, int size){
 			printf("   Nome    | ");
 			printf("\033[1;34m");
 			switch(i){
-				case 0:
+				case 0:	printf("Carrier\n");
 						temp = Carrier;
 						tipo='C';
 						break;
-				case 1:
+				case 1:	printf("Battleship\n");
 						temp = Battleship;
 						tipo='B';
 						break;
-				case 2:
+				case 2:	printf("Cruiser\n");
 						temp = Cruiser;
 						tipo='R';
 						break;
-				case 3:
+				case 3:	printf("Submarine\n");
 						temp = Submarine;
 						tipo='S';
 						break; 
-				case 4:
+				case 4: printf("Destroyer\n");
 						temp = Destroyer;
 						tipo='D';
 						break; 
@@ -282,14 +280,12 @@ NODE** ManualCoord(int npTipos[], int size){
 			EraseBoardData(player2);
 			player2=createNode(size,createPoint(size/2,size/2),NULL);
 		}
-		
 	}
 
 	static NODE *players[3];
 	players[1] = player1;
 	players[2] = player2;
 	return players;
-	
 }
 
 
@@ -309,24 +305,19 @@ NODE** ManualCoord(int npTipos[], int size){
 	for(int i=0;i<5;i++){
 		for (int j = 0; j < npTipos[i]; j++){
 			switch(i){
-				case 0:
-						temp = Carrier;
+				case 0:	temp = Carrier;
 						tipo='C';
 						break;
-				case 1:
-						temp = Battleship;
+				case 1:	temp = Battleship;
 						tipo='B';
 						break;
-				case 2:
-						temp = Cruiser;
+				case 2:	temp = Cruiser;
 						tipo='R';
 						break;
-				case 3:
-						temp = Submarine;
+				case 3:	temp = Submarine;
 						tipo='S';
 						break; 
-				case 4:
-						temp = Destroyer;
+				case 4:	temp = Destroyer;
 						tipo='D';
 						break; 
 			}					

@@ -36,56 +36,40 @@ NODE *createNode(float size, POINT center, NODE *father){
 //recebe um quadrant int e um float x e devolve a coordenada x correta para o ponto central do quadrante
 float returnQuadrantX(int quadrant, float x) {
   switch(quadrant) {
-    case 0:
-    case 2:
-      return  x / 2;
-      break;
-    case 1:
-    case 3:
-      return x / 2 + x;
-      break;
-    default:
-      return -1;
-      break;
+    case 0: case 2: return  x / 2;
+                  break;
+    case 1: case 3: return x / 2 + x;
+                  break;
+    default: return -1;
+            break;
   }
 }
 
 //recebe um quadrant int e um float y e devolve a coordenada y correta para o ponto central do quadrante
 float returnQuadrantY(int quadrant, float y) {
   switch(quadrant) {
-    case 0:
-    case 1:
-      return  y / 2;
-      break;
-    case 2:
-    case 3:
-      return y / 2 + y;
-      break;
-    default:
-      return -1;
-      break;
+    case 0: case 1: return  y / 2;
+          break;
+    case 2: case 3: return y / 2 + y;
+          break;
+    default: return -1;
+          break;
   }
 }
 
 //recebe um apontador NODE, um objeto POINT, xhalf e yhalf que representam o ponto central da ráiz da QuadTree
 //recebe também um char info que queremos guardar no ponto que vamos inserir na árvore
-void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
-{
-  if (node->type == QDLEAF)
-  {
+void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info){
+  if (node->type == QDLEAF) {
     //se for folha e estiver vazia
-    if (node->node.leaf.flag == 0)
-    {
+    if (node->node.leaf.flag == 0) {
       node->node.leaf.flag = 1;
       node->node.leaf.p = coord;
       node->node.leaf.p.info = info;
-      if (node->node.quadrant[4] != NULL)
-      {
+      if (node->node.quadrant[4] != NULL) {
         node->node.quadrant[4]->nsons++;
       }
-    }
-    else
-    { //se for folha e estiver preenchida
+    }else{ //se for folha e estiver preenchida
       POINT temp = node->node.leaf.p;
       node->type = QDNODE;
 
@@ -94,69 +78,45 @@ void insert(NODE *node, POINT coord, float xhalf, float yhalf, char info)
       node->node.quadrant[2] = createNode(xhalf * 2, createPoint(returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf)), node);
       node->node.quadrant[3] = createNode(xhalf * 2, createPoint(returnQuadrantX(3, xhalf), returnQuadrantY(3, yhalf)), node);
 
-      if (temp.x <= xhalf && temp.y <= yhalf)
-      {
+      if (temp.x <= xhalf && temp.y <= yhalf){
         insert(node->node.quadrant[0], temp, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
-      }
-      else if (temp.x > xhalf && temp.y <= yhalf)
-      {
+      }else if (temp.x > xhalf && temp.y <= yhalf){
         insert(node->node.quadrant[1], temp, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
-      }
-      else if (temp.x <= xhalf && temp.y > yhalf)
-      {
+      }else if (temp.x <= xhalf && temp.y > yhalf){
         insert(node->node.quadrant[2], temp, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
-      }
-      else if (temp.x > xhalf && temp.y > yhalf)
-      {
+      }else if (temp.x > xhalf && temp.y > yhalf){
         insert(node->node.quadrant[3], temp, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
       }
 
-      if (coord.x <= xhalf && coord.y <= yhalf)
-      {
+      if (coord.x <= xhalf && coord.y <= yhalf){
         insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
-      }
-      else if (coord.x > xhalf && coord.y <= yhalf)
-      {
+      }else if (coord.x > xhalf && coord.y <= yhalf){
         insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
-      }
-      else if (coord.x <= xhalf && coord.y > yhalf)
-      {
+      }else if (coord.x <= xhalf && coord.y > yhalf){
         insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
-      }
-      else if (coord.x > xhalf && coord.y > yhalf)
-      {
+      }else if (coord.x > xhalf && coord.y > yhalf){
         insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
       }
     }
   }
 
   //caso seja um nó
-  else if (node->type == QDNODE)
-  {
-    if (coord.x <= xhalf && coord.y <= yhalf)
-    {
+  else if (node->type == QDNODE){
+    if (coord.x <= xhalf && coord.y <= yhalf){
       insert(node->node.quadrant[0], coord, returnQuadrantX(0, xhalf), returnQuadrantY(0, yhalf), info);
-    }
-    else if (coord.x > xhalf && coord.y <= yhalf)
-    {
+    }else if (coord.x > xhalf && coord.y <= yhalf){
       insert(node->node.quadrant[1], coord, returnQuadrantX(1, xhalf) , returnQuadrantY(1, yhalf), info);
-    }
-    else if (coord.x <= xhalf && coord.y > yhalf)
-    {
+    }else if (coord.x <= xhalf && coord.y > yhalf){
       insert(node->node.quadrant[2], coord, returnQuadrantX(2, xhalf), returnQuadrantY(2, yhalf), info);
-    }
-    else if (coord.x > xhalf && coord.y > yhalf)
-    {
+    }else if (coord.x > xhalf && coord.y > yhalf){
       insert(node->node.quadrant[3], coord, returnQuadrantX(3, xhalf) , returnQuadrantY(3, yhalf), info);
     }
   }
 }
 
 //Recebe um apontador NODE para a raíz e uma coordenada, retorna 1 se encontrar um ponto associado a essa coordenada na árvore, 0 senão
-int searchCoord(NODE *tree, POINT coord)
-{
-  switch (tree->type)
-  {
+int searchCoord(NODE *tree, POINT coord){
+  switch (tree->type){
   case QDLEAF:
     if ((tree->node.leaf.flag == 1) && (comparePoints(coord, tree->node.leaf.p) == 1)) {
       return 1;
@@ -184,27 +144,22 @@ int searchCoord(NODE *tree, POINT coord)
   }
 
 //sabendo que já existe uma coordenada na árvore, a função retorna o nó onde o ponto se encontra
-NODE *getNode(NODE *node, POINT coord)
-{
+NODE *getNode(NODE *node, POINT coord){
   switch (node->type) {
   case QDLEAF:
       return node;
     break;
   case QDNODE:
-    if (coord.x <= node->center.x && coord.y <= node->center.y)
-    {
+    if (coord.x <= node->center.x && coord.y <= node->center.y){
       return getNode(node->node.quadrant[0], coord);
     }
-    if (coord.x > node->center.x && coord.y <= node->center.y)
-    {
+    if (coord.x > node->center.x && coord.y <= node->center.y){
       return getNode(node->node.quadrant[1], coord);
     }
-    if (coord.x <= node->center.x && coord.y > node->center.y)
-    {
+    if (coord.x <= node->center.x && coord.y > node->center.y){
       return getNode(node->node.quadrant[2], coord);
     }
-    if (coord.x > node->center.x && coord.y > node->center.y)
-    {
+    if (coord.x > node->center.x && coord.y > node->center.y){
       return getNode(node->node.quadrant[3], coord);
     }
   default:

@@ -10,28 +10,25 @@
 //função que recebe a board de um jogador e retorna um int com o valor de peças de barcos não destruídas 
 //(HP, Health Points)
 int getHP(NODE* player){
-	
 	int hp = 0;
 
-	switch (player->type)
-  {
-  case QDLEAF:
-    switch (player->node.leaf.p.info){
-		case 'C': case 'B':case 'R':case 'S':case 'D':
-			return 1;
+	switch (player->type){
+		case QDLEAF:
+			switch (player->node.leaf.p.info){
+				case 'C': case 'B':case 'R':case 'S':case 'D':
+					return 1;
+					break;
+				
+				default:
+				return 0;
+					break;
+				}
 			break;
-		
+		case QDNODE:
+			return hp + getHP(player->node.quadrant[0]) + getHP(player->node.quadrant[1]) + getHP(player->node.quadrant[2]) + getHP(player->node.quadrant[3]);
 		default:
-		  return 0;
 			break;
-		}
-    break;
-  case QDNODE:
-    return hp + getHP(player->node.quadrant[0]) + getHP(player->node.quadrant[1]) + getHP(player->node.quadrant[2]) + getHP(player->node.quadrant[3]);
-
-  default:
-    break;
-  }
+	}
 	return 0;
 }
 
@@ -41,65 +38,55 @@ void printEnemyBoard(NODE* player){
   int size = player->half*2;
 
   printf("   x");
-  for (int i = 0; i < size; i++)
-  {
+  for (int i = 0; i < size; i++){
     if (i < 10)
     printf(" %d ", i);
     else
     printf("%d ", i);
   }
   printf("\n  y\n");
-  for (int y = 0; y < size; y++)
-  {
+  for (int y = 0; y < size; y++){
     if (y < 10)
     printf("  %d  ", y);
     else
     printf(" %d  ", y);
-    for (int x = 0; x < size; x++)
-    {
+    for (int x = 0; x < size; x++){
       tempPoint = createPoint(x, y);
       
-      if (searchCoord(player, tempPoint) == 1)
-      {
+      if (searchCoord(player, tempPoint) == 1){
         NODE* tempNode = getNode(player, tempPoint);
         switch(tempNode->node.leaf.p.info){
           
           case 'C': case 'B': case 'R': case 'S': case 'D': //Blue
-          printf("\033[0;34m");
-          printf("0  ");
-          printf("\033[0m");
-          break;
-
+			printf("\033[0;34m");
+			printf("0  ");
+			printf("\033[0m");
+			break;
           case 1: //Blue
-          printf("\033[0;34m");
-          printf("0  ");
-          printf("\033[0m");
-          break;
-
+			printf("\033[0;34m");
+			printf("0  ");
+			printf("\033[0m");
+			break;
           case '0': //Blue
-          printf("\033[0;34m");
-          printf("0  ");
-          printf("\033[0m");
-          break;
-
+			printf("\033[0;34m");
+			printf("0  ");
+			printf("\033[0m");
+			break;
           case '2': //Bold Red
-          printf("\033[1;31m");
-          printf("2  ");
-          printf("\033[0m");
-          break;
-
+			printf("\033[1;31m");
+			printf("2  ");
+			printf("\033[0m");
+			break;
           case '3': //Green
-          printf("\033[0;32m");
-          printf("3  ");
-          printf("\033[0m");
-          break;
-          
+			printf("\033[0;32m");
+			printf("3  ");
+			printf("\033[0m");
+			break;
           default: //Branco (sem definições)
-          printf("%c  ", tempNode->node.leaf.p.info);
-          break;
+			printf("%c  ", tempNode->node.leaf.p.info);
+			break;
         }
-      }
-			else {
+      }else{
         printf("\033[0;34m");
         printf("0  ");
         printf("\033[0m");
@@ -151,7 +138,6 @@ void shootEnemy(NODE* enemy, int HP){
 					printf("\033[0m");
 					shootEnemy(enemy,HP);
 					break;
-					
 				case '3':
 					printf("\033[1;33m");
 					printf("Você já atirou lá e errou ... Tente novamente.\n\n");
@@ -159,15 +145,13 @@ void shootEnemy(NODE* enemy, int HP){
 					shootEnemy(enemy,HP);
 					break;		
 			}
-		}
-		else{
+		}else{
 			printf("\033[1;34m");
 			printf("Água atingida!\n\n");
 			insert(enemy,target,enemy->half,enemy->half, '3');
 			printf("\033[0m");
 		}		
-	}
-	else{
+	}else{
 		printf("\033[1;33m");
 		printf("\nEntrada inválida! Tente novamente!\n");
 		printf("\033[0m");
